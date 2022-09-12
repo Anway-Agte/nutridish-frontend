@@ -14,7 +14,6 @@ export const HomeNavigator = () => {
         screenOptions={{
             contentStyle:{
                 marginTop: Constants.statusBarHeight, 
-                backgroundColor: theme.theme.colors.primary
             }
         }}
         >
