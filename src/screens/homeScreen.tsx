@@ -9,7 +9,7 @@ return(
             <ImageBackground source={require('../../assets/bgimg.jpg')} resizeMode='cover' style={styles.container} >
             {/* <Text style={{marginTop: 50, marginLeft:2}} h2>Nutri Dish</Text>
             <Text style={{marginTop:20, marginBottom:40}}>Lorem ipsumas dolor sit amet consectetur adipisicing elit. Temporibus aperiam quia impedit cupiditate dolore neque nihil natus, reprehenderit necessitatibus sit provident. Tempora quo, autem modi quibusdam sit maxime laboriosam aliquid?</Text> */}
-            <Button containerStyle={{width:'78%', height:50, borderRadius:16,marginTop:210}} buttonStyle={{borderRadius:16,width:'100%',height:'100%'}}  onPress={()=>{props.navigation.navigate('Form')}} color='error' title='BOOK A NUTRI DISH !'></Button>
+            <Button containerStyle={{width:'78%', height:70, borderRadius:16,marginTop:'54%'}} buttonStyle={{borderRadius:16,width:'100%',height:'100%',borderWidth:4, borderColor:'red', paddingBottom:10}} titleStyle={{fontWeight:'bold', fontSize:20}}  onPress={()=>{props.navigation.navigate('Form')}} color='#4290f5' title='BOOK A NUTRI DISH !'></Button>
             </ImageBackground>
 
 )

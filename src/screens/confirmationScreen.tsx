@@ -5,10 +5,13 @@ export const ConfirmationScreen = (props:any) => {
     return(
         <View style={styles.container}>
           <Card containerStyle={{elevation:10, width:'90%',borderRadius:16}}>
-          <Card.Title h3>Order Confirmation</Card.Title>
+          <Card.Title style={{color:'#13cf2f'}} h2>Order Confirmation</Card.Title>
           <Card.Divider />
           <Card.Title h4 style={{ marginBottom: 10 }}>
-          {`Your dish will be delivered on ${props.route.params.date}`}
+          {`Your dish will be delivered on`}
+          </Card.Title>
+          <Card.Title h4 style={{ marginBottom: 10, color:'red' }}>
+          {`${props.route.params.date}`}
           </Card.Title>
           <Card.Image
             containerStyle={{borderRadius:16,borderBottomWidth:0}}
@@ -19,7 +22,7 @@ export const ConfirmationScreen = (props:any) => {
           <Card.Divider/>
 
           <Button
-            color='error'
+            color='#4290f5'
             // icon={
             // //   <Icon
             // //     name="code"
@@ -38,6 +41,10 @@ export const ConfirmationScreen = (props:any) => {
               marginRight: 0,
               marginBottom: 0,
               paddingVertical:10
+            }}
+            titleStyle={{
+              fontSize:23,
+              fontWeight:'bold'
             }}
             title="GO BACK TO HOME SCREEN"
           />

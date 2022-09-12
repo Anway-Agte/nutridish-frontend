@@ -96,10 +96,17 @@ export const FormScreen = (props:any) => {
             <Text style={{paddingHorizontal:1}} h4>
                 An order placed right now will be delivered 
             </Text>
-            <Text style={{marginBottom:10}} h4>on
+            <Text style={{marginBottom:10,}} h4>on
+            <Text style={{color:'red'}} h4>
             {
-                date.getHours() < 11 ? ` ${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`:` ${days[new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDay()]}, ${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}`
-                } by 12:15 PM
+                date.getHours() < 11 ? ` ${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} `
+                :` ${days[new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDay()]}, ${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()} `
+                } 
+                </Text>
+                by
+                <Text h4 style={{color:'#0335ff'}}>
+                 {` 12:15 PM`}
+                </Text>
             </Text>
 
             <View style={{flexDirection:'row'}}>
@@ -152,7 +159,7 @@ export const FormScreen = (props:any) => {
                 disabled={Object.keys(floor).length == 0}
                 />
             <Input inputContainerStyle={{borderBottomWidth:0}} label="Room" keyboardType="numeric" onChangeText={text => setroom(text)} value={room} style={styles.input} placeholder='Room'/>
-            <Button containerStyle={{width:'78%', height:50, borderRadius:16}} buttonStyle={{borderRadius:16,width:'100%',height:'100%'}}  onPress={()=>initializePayment()} color='primary' title='MAKE UPI PAYMENT'></Button>
+            {/* <Button containerStyle={{width:'78%', height:50, borderRadius:16}} buttonStyle={{borderRadius:16,width:'100%',height:'100%'}}  onPress={()=>initializePayment()} color='primary' title='MAKE UPI PAYMENT'></Button> */}
             <Button containerStyle={{width:'78%', height:50, borderRadius:16, marginTop:10}} buttonStyle={{borderRadius:16,width:'100%',height:'100%'}}  onPress={()=>confirmBooking()} color='secondary' title='PAY ON DELIVERY'></Button>
         </View>
     )
