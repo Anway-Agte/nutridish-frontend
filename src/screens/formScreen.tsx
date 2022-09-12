@@ -93,12 +93,12 @@ export const FormScreen = (props:any) => {
     return(
         <View style={styles.container}>
 
-            <Text h4>
-                Your order will be delivered on  
+            <Text style={{paddingHorizontal:1}} h4>
+                An order placed right now will be delivered 
             </Text>
-            <Text style={{marginBottom:10}} h4>
+            <Text style={{marginBottom:10}} h4>on
             {
-                date.getHours() < 11 ? `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`:`${days[new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDay()]}, ${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}`
+                date.getHours() < 11 ? ` ${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`:` ${days[new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDay()]}, ${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}`
                 } by 12:15 PM
             </Text>
 
