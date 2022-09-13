@@ -40,7 +40,6 @@ export const FormScreen = (props:any) => {
     useEffect(() => {
         getFloors(bldg._id).then(
             res=>{
-                console.log(res);
                 setfloors(res)}
         )
     }, [bldg]);
@@ -51,12 +50,44 @@ export const FormScreen = (props:any) => {
         ).catch()
     }, [floor]);
 
-    const initializePayment = () => {
-        Linking.openURL('upi://pay?pa=kulmayu@okaxis&pn=Mayuresh%20Kulkarni&aid=uGICAgICw3a7PYA')
-        .then(res=>{console.log('open url : ',res);})
-        .catch(err=>{})
-        Linking.addEventListener('url',(event)=>{console.log(event);})
+    const validateForm = (body:any) => {
+        
+        if(!body.name){
+            ToastAndroid.show('Please enter a name', ToastAndroid.SHORT)
+            return false
+        }
+        else if(body.contact.length !== 10 || !body.contact){
+            ToastAndroid.show('Please enter a valid mobile number', ToastAndroid.SHORT)
+            return false
+        }
+        else if(!body.building || !body.department || !body.floor){
+            ToastAndroid.show('Please select all the field values', ToastAndroid.SHORT)
+            return false
+        }
+        else if(!body.room){
+            ToastAndroid.show('Please enter a room number',ToastAndroid.SHORT)
+            return false
+        }
+        else{
+            return true
+        }
+    }
 
+    const initializePayment = () => {
+        const body = {
+            name:name, 
+            contact:mobile, 
+            building:bldg.name,
+            department:department.department,
+            floor: floor.floor,
+            room: room, 
+            date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
+        }
+        if(validateForm(body)){
+            props.navigation.navigate('UPI',{body:body, 
+                date: date.getHours() < 11 ? `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` 
+                : `${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}` })
+        }
     }
 
     const confirmBooking = () => {
@@ -70,20 +101,9 @@ export const FormScreen = (props:any) => {
             date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
         }
 
-        if(!body.name){
-            ToastAndroid.show('Please enter a name', ToastAndroid.SHORT)
-        }
-        else if(body.contact.length !== 10 || !body.contact){
-            ToastAndroid.show('Please enter a valid mobile number', ToastAndroid.SHORT)
-        }
-        else if(!body.building || !body.department || !body.floor){
-            ToastAndroid.show('Please select all the field values', ToastAndroid.SHORT)
-        }
-        else if(!body.room){
-            ToastAndroid.show('Please enter a room number',ToastAndroid.SHORT)
-        }
-        else{
-        book(body).then(res =>
+        if(validateForm(body)){
+
+            book(body).then(res =>
             props.navigation.navigate('Confirmation',{date: date.getHours() < 11 ? `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` 
                 : `${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}` 
                 })
@@ -94,9 +114,9 @@ export const FormScreen = (props:any) => {
         <View style={styles.container}>
 
             <Text style={{paddingHorizontal:1}} h4>
-                An order placed right now will be delivered 
+                An order placed right now will be delivered on
             </Text>
-            <Text style={{marginBottom:10,}} h4>on
+            <Text style={{marginBottom:10,paddingHorizontal:5}} h4>
             <Text style={{color:'red'}} h4>
             {
                 date.getHours() < 11 ? ` ${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} `
@@ -110,8 +130,24 @@ export const FormScreen = (props:any) => {
             </Text>
 
             <View style={{flexDirection:'row'}}>
-            <Input containerStyle={{flex:1}} inputContainerStyle={{borderBottomWidth:0}} label="Name" onChangeText={text => setName(text)} value={name} style={styles.input} placeholder='Name'/>
-            <Input containerStyle={{flex:1}} inputContainerStyle={{borderBottomWidth:0}} label="Contact" keyboardType="numeric" onChangeText={text => setMobile(text)} value={mobile} inputStyle={styles.input} placeholder='Mobile Number'/>
+            <Input 
+                containerStyle={{flex:1}} 
+                inputContainerStyle={{borderBottomWidth:0}} 
+                label="Name" 
+                onChangeText={text => setName(text)} 
+                value={name} 
+                style={styles.input} 
+                placeholder='Name'
+            />
+            <Input 
+                containerStyle={{flex:1}} 
+                inputContainerStyle={{borderBottomWidth:0}} 
+                label="Contact" 
+                keyboardType="numeric" 
+                onChangeText={text => setMobile(text)} 
+                value={mobile} 
+                inputStyle={styles.input} 
+                placeholder='Mobile Number'/>
             </View>
            
             <View style={{flexDirection:'row',paddingHorizontal:2,}}>
@@ -158,9 +194,29 @@ export const FormScreen = (props:any) => {
                 }} 
                 disabled={Object.keys(floor).length == 0}
                 />
-            <Input inputContainerStyle={{borderBottomWidth:0}} label="Room" keyboardType="numeric" onChangeText={text => setroom(text)} value={room} style={styles.input} placeholder='Room'/>
-            {/* <Button containerStyle={{width:'78%', height:50, borderRadius:16}} buttonStyle={{borderRadius:16,width:'100%',height:'100%'}}  onPress={()=>initializePayment()} color='primary' title='MAKE UPI PAYMENT'></Button> */}
-            <Button containerStyle={{width:'78%', height:50, borderRadius:16, marginTop:10}} buttonStyle={{borderRadius:16,width:'100%',height:'100%'}}  onPress={()=>confirmBooking()} color='secondary' title='PAY ON DELIVERY'></Button>
+            <Input 
+                inputContainerStyle={{borderBottomWidth:0}} 
+                label="Room" 
+                keyboardType="numeric" 
+                onChangeText={text => setroom(text)} 
+                value={room} 
+                style={styles.input} 
+                placeholder='Room'
+            />
+            <Button 
+                containerStyle={{width:'78%', height:50, borderRadius:16}} 
+                buttonStyle={{borderRadius:16,width:'100%',height:'100%'}} 
+                onPress={()=>initializePayment()}
+                color='primary' 
+                title='MAKE UPI PAYMENT'
+            />
+            <Button 
+                containerStyle={{width:'78%', height:50, borderRadius:16, marginTop:10}} 
+                buttonStyle={{borderRadius:16,width:'100%',height:'100%'}}  
+                onPress={()=>confirmBooking()} 
+                color='secondary' 
+                title='PAY ON DELIVERY'
+            />
         </View>
     )
 } 

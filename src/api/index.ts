@@ -1,7 +1,6 @@
 const host = 'https://nutridish-backend.herokuapp.com'
 
 export const book = async (body:any) => {
-    console.log(body);
     try{
         const response = await fetch(`${host}/book`, {
             method:'POST',
@@ -13,7 +12,6 @@ export const book = async (body:any) => {
         if(response.ok){
             const result = await response.json()
             if(result){
-                console.log('sasdasfdas');
                 return result; 
             }
         }else{
