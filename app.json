@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fruit-startup",
-    "slug": "fruit-startup",
+    "name": "Nutri-Dish",
+    "slug": "Nutri-Dish",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,11 +21,12 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.nutridish",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.nutridish"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
