@@ -103,7 +103,7 @@ export const FormScreen = (props:any) => {
 
         if(validateForm(body)){
 
-            book(body).then(res =>
+            book({...body,paymentMode:'Pay On Delivery'}).then(res =>
             props.navigation.navigate('Confirmation',{date: date.getHours() < 11 ? `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` 
                 : `${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}` 
                 })
