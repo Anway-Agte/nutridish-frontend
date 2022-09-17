@@ -3,9 +3,9 @@ import { createTheme } from '@rneui/themed';
 import { ThemeProvider } from '@rneui/themed/dist/config';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Constants from 'expo-constants';
 import { AppNavigator } from './src/navigation';
-
+import { ApplicationProvider } from '@ui-kitten/components';
+import * as eva from '@eva-design/eva';
 
 const myTheme = createTheme({
   lightColors: {
@@ -21,10 +21,10 @@ const myTheme = createTheme({
 
 export default function App() {
   return (
-    <ThemeProvider theme={myTheme}>
+    <ApplicationProvider {...eva} theme={eva.light}>
        <AppNavigator/>
       <StatusBar style="dark" />
-    </ThemeProvider>
+    </ApplicationProvider>
 
   );
 }

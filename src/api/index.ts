@@ -71,4 +71,59 @@ export const getFloors = async (building:string) =>{
     catch(err){
         throw(err);
     }
+} 
+
+export const sendEmailForVerification = async (email:string) => {
+    try{
+        const response = await fetch(`${host}/sendmail`,{
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email:email}) ,
+        });
+        if(response.ok){
+            const result = await response.json()
+            if(result){
+                return result
+            }
+            else{
+                throw new Error('There was some unexpected error. Please try again')
+            }
+        }
+        else{
+            throw new Error('There was some unexpected error. Please try again')
+        }
+    }
+    catch(err){
+        throw err
+    }
+} 
+
+export const SignUserIn = async (payload:any) =>{
+    try{
+        console.log('here')
+        const response = await fetch(`${host}/signin`,{
+            method:"POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        if(response.ok){
+            const result = await response.json()
+            if(result){
+                return result
+            }
+            else{
+                throw new Error('There was some unexpected error. Please try again')
+            }
+        }
+        else{
+            throw new Error('There was some unexpected error. Please try again')
+        }
+    }
+    catch(err){
+        throw err
+    }
 }

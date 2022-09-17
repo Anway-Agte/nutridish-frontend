@@ -10,7 +10,6 @@ import { UpiPaymentScreen } from "../screens/upiPaymentScreen";
 const Stack = createNativeStackNavigator(); 
 
 export const HomeNavigator = () => {
-    const theme = useTheme()
     return (
         <Stack.Navigator
         screenOptions={{
@@ -26,7 +25,7 @@ export const HomeNavigator = () => {
                 name='Register'
                 component={RegisterForm}
             />
-            <Stack.Screen 
+            {/* <Stack.Screen 
                 options={{headerShown : false}}  
                 name="Home" 
                 component={HomeScreen}
@@ -45,7 +44,7 @@ export const HomeNavigator = () => {
                 options={{headerShown:false}} 
                 name='UPI'
                 component={UpiPaymentScreen}
-            />
+            /> */}
         </Stack.Navigator>
     )
 }
