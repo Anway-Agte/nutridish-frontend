@@ -1,9 +1,8 @@
-import { View, StyleSheet, ToastAndroid, TabBarIOS} from "react-native"
+import { View, StyleSheet, ToastAndroid} from "react-native"
 import {Button, Image, Input, Text} from '@rneui/themed'
 import { useEffect, useState } from "react"
 import { book, getBuildings, getDepartments, getFloors } from "../api"
 import SelectDropdown from "react-native-select-dropdown"
-import * as Linking from 'expo-linking'
 
 export const FormScreen = (props:any) => {
     const [name, setName] = useState('')

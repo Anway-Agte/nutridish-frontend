@@ -1,6 +1,5 @@
 import { View, Text, ImageBackground, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
-import {Button, Card, Input} from '@rneui/themed'
 
 
 export const RegisterForm = () => {
@@ -9,12 +8,10 @@ export const RegisterForm = () => {
 
 
     return (
-        <ImageBackground
-            source={{}}
-            resizeMode='cover'
+        <View
             style={styles.container}
         >
-
+{/*         
             <Card
                 containerStyle={styles.cardContainer}
             >
@@ -42,8 +39,8 @@ export const RegisterForm = () => {
             </View>
 
 
-            </Card>
-        </ImageBackground>
+            </Card> */}
+        </View>
     )
 } 
 

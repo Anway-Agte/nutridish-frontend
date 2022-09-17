@@ -15,10 +15,11 @@ export const HomeNavigator = () => {
         <Stack.Navigator
         screenOptions={{
             contentStyle:{
-                marginTop: Constants.statusBarHeight, 
+                marginTop: Constants.statusBarHeight,
+                backgroundColor:'#dff5f7' 
             }
         }}
-        initialRouteName="Home"
+        initialRouteName="Register"
         >
             <Stack.Screen 
                 options={{headerShown:false}}
