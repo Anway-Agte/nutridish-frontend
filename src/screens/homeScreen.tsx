@@ -1,7 +1,7 @@
-import {View, StyleSheet, ImageBackground, Image, AppState} from 'react-native';
+import {View, StyleSheet, ImageBackground, Image, AppState, BackHandler} from 'react-native';
 import {Button, Card, IndexPath, Layout, List, ListItem, Select, SelectItem, Spinner, Text} from '@ui-kitten/components';
-import { useIsFocused } from '@react-navigation/native';
-import { useEffect, useRef, useState } from 'react';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { book, generatePaymentLink } from '../api';
 import * as Linking from 'expo-linking';
@@ -19,11 +19,6 @@ const renderItem = ({ item, index }:any) => (
 
 export const HomeScreen  = (props:any) => {
 
-    // const isFocused = useIsFocused();
-
-    // useEffect(() => {
-    //     console.log(isFocused);
-    // }, [isFocused])
     
     const appState = useRef(AppState.currentState) 
 
@@ -32,25 +27,7 @@ export const HomeScreen  = (props:any) => {
     const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
 
     const [paymentInProgress, setpaymentInProgress] = useState<boolean>(false);
-    // const [appStateVisible, setAppStateVisible] = useState(appState.current);
-
-    // useEffect(() => {
-    //     const subscription = AppState.addEventListener("change", _handleAppStateChange);
-    //     return () => {
-    //       subscription.remove();
-    //     };
-    //   }, []);
-    
-    //   const _handleAppStateChange = (nextAppState:any) => {
-    //     console.log(appState);
-    //     if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-    //       console.log('App has come to the foreground!');
-    //     }
-    
-    //     appState.current = nextAppState;
-    //     setAppStateVisible(appState.current);
-    //     console.log('AppState', appState.current);
-    //   };
+ 
     const [date,setDate] = useState(new Date());
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -65,7 +42,9 @@ export const HomeScreen  = (props:any) => {
 
     useEffect(() => {
         setSelectedIndex(new IndexPath(0))
-    }, []);
+    }, []); 
+
+
 
     const bookApi = () => {
         const body = {
@@ -105,7 +84,6 @@ export const HomeScreen  = (props:any) => {
                         props.navigation.navigate('Payment',{payment:res})
                     }) 
                 .catch(err=>{
-                    console.log(err);
                 })
                 }
             }

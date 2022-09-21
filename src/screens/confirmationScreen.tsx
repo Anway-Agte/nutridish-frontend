@@ -1,6 +1,7 @@
-import { StyleSheet,Image, View } from "react-native"
+import { StyleSheet,Image, View, BackHandler } from "react-native"
 import { Button, Card, Layout, Text } from "@ui-kitten/components"
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const Header = (props:any) => (
@@ -17,21 +18,36 @@ const Footer = (props:any) => (
     <Text status="info">Order ID : <Text  category='h6'>{props.id}</Text></Text>
     <Text status="danger">Your order will be delivered on {props.date} by 12:15 PM</Text>
     <Text appearance="hint">Please show this QR during the time of delivery</Text>
+    <Button 
+    onPress={()=>{props.navigate('Home')}}
+    style={{marginTop:25}} status='info' > Go Back to Home Screen</Button>
   </View>
 );
 
 export const ConfirmationScreen = (props:any) => {
 
   useEffect(() => {
-    console.log(props.route.params.order.data)
-  }, []);
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      props.navigation.goBack(null);
+      return true;
+    }); 
 
+    return ()=>{
+      BackHandler.removeEventListener('hardwareBackPress', () => {
+        props.navigation.goBack(null);
+        return true;
+      });
+    }
+  }, []);
+  
+  
     return(
         <Layout style={styles.container}>
             <Card status="success" footer={(prop:any)=>
               <Footer {...prop} 
                 id={props.route?.params?.order?.data?.booking?._id}
                 date={props.route?.params?.order?.data?.booking?.date}
+                navigate={props.navigation.navigate}
             />}  style={styles.card}>
               <Image
               style={styles.qr}
@@ -42,6 +58,7 @@ export const ConfirmationScreen = (props:any) => {
               
               />
             </Card>
+
         </Layout>
     )
 } 

@@ -16,7 +16,6 @@ export const book = async (body:any,jwt:string) => {
                 return result; 
             }
         }else{
-            console.log(response.status);
             throw new Error('There was some unhandled error')
         }
     }
@@ -26,7 +25,6 @@ export const book = async (body:any,jwt:string) => {
 } 
 
 export const getBuildings = async () => {
-    console.log(`${host}/delivery/buildings`);
     try{
         const response = await fetch(`${host}/delivery/buildings`,{
             method:'GET',
@@ -128,7 +126,6 @@ export const SignUserIn = async (payload:any) =>{
 } 
 
 export const fillDetails = async(body:any,jwt:string) => {
-    console.log(`${host}/user`)
     try{
         const response = await fetch(`${host}/user`, {
             method:'PUT', 
@@ -201,5 +198,49 @@ export const verifyPaymentLink = async (body:any,jwt:string) => {
     }
     catch(err){
         throw new Error('There was some error. Please try again')
+    }
+} 
+
+export const getUser = async (jwt:string) => {
+    try{
+        const response = await fetch(`${host}/user`,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization' : `Bearer ${jwt}`
+            } 
+        })
+        if(response.ok){
+            const result = await response.json()
+            return result
+        }
+        else{
+            throw new Error('There was an error! Please try again.')
+        }
+    }
+    catch(err){
+        throw new Error('There was an error! Please try again.')
+    }
+} 
+
+export const getOrderHistory = async (jwt:string) => {
+    try{
+        const response = await fetch(`${host}/user/orders`,{
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization' : `Bearer ${jwt}`
+            } 
+        })
+        if(response.ok){
+            const result = await response.json()
+            return result
+        }
+        else{
+            throw new Error('There was an error! Please try again.')
+        }
+    }
+    catch(err){
+        throw new Error('There was an error! Please try again.')
     }
 }

@@ -4,12 +4,12 @@ import Constants from 'expo-constants';
 import { FormScreen } from "../screens/formScreen";
 import { ConfirmationScreen } from "../screens/confirmationScreen";
 import {RegisterForm} from '../screens/registerForm';
-import { UpiPaymentScreen } from "../screens/upiPaymentScreen";
 import { UserContext } from "../contexts";
 import { useContext, useEffect } from "react";
 import { BottomNavigation, BottomNavigationTab, Icon, Text } from "@ui-kitten/components";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BookStackNavigator } from "./bookStackNavigator";
+import { OrderHistory } from "../screens/orderHistory";
 
 const Stack = createNativeStackNavigator(); 
 
@@ -24,6 +24,7 @@ const BottomTabBar = ({ navigation, state }:any) =>  (
       selectedIndex={state.index}
       onSelect={index => navigation.navigate(state.routeNames[index])}>
       <BottomNavigationTab title='HOME'/>
+      <BottomNavigationTab title='ORDERS'/>
       {/* <BottomNavigationTab title='ORDERS'/> */}
     </BottomNavigation>
   );
@@ -34,7 +35,6 @@ export const HomeNavigator = () => {
     const {user,updateUser} = useContext(UserContext)
 
     useEffect(() => {
-        console.log('hello')
     }, []);
     
     return (
@@ -52,6 +52,7 @@ export const HomeNavigator = () => {
                 tabBar={props => <BottomTabBar {...props}/>}
                 >
                 <Tab.Screen name='BookNavigator' component={BookStackNavigator} />
+                <Tab.Screen name='Orders' component={OrderHistory} />
             </Tab.Navigator>
             : 
             <Stack.Navigator

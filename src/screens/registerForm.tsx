@@ -1,8 +1,9 @@
 import { View, ImageBackground, StyleSheet, ToastAndroid } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Card , Input, Layout, Spinner, Text} from '@ui-kitten/components';
-import { sendEmailForVerification, SignUserIn } from '../api';
+import { getUser, sendEmailForVerification, SignUserIn } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserContext } from '../contexts';
 
 export const Header = (props:any) => (
     <View {...props}>
@@ -79,7 +80,8 @@ export const RegisterForm = (props:any) => {
     const [otpError, setotpError] = useState<boolean>(false);
     const [resendOTP, setresendOTP] = useState<boolean>(false);
     const [timer, settimer] = useState<any>();
-    const [time, settime] = useState<number>(9);
+    const [time, settime] = useState<number>(9); 
+    const {user,updateUser} = useContext(UserContext);
 
     const validEmail = new RegExp('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@moderncoe.edu.in$') 
 
@@ -119,12 +121,21 @@ export const RegisterForm = (props:any) => {
         setverifyLoading(true);
         SignUserIn({email:email,otp:otp}).
         then(res=>{
-            setverifyLoading(false);
             AsyncStorage.setItem('jwt',res.token)
             .then(
-                res=>ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
+                r=>{
+                getUser(res.token).then(user=>{
+                    if(user.detailsEntered){
+                        updateUser(user);
+                    }else{
+                        setverifyLoading(false);
+                        ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
+                        props.navigation.navigate('Form')
+                    } 
+                })        
+              }
             )
-            props.navigation.navigate('Form')
+            
         })
         .catch(
            err=>{

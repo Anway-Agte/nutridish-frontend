@@ -19,7 +19,6 @@ export const PaymentScreen = (props:any) => {
 
       const _handleAppStateChange = (nextAppState:any) => {
         if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
-            console.log('here');
 
                 const body = {
                     paymentId:props.route.params.payment.data.payment_id
@@ -30,18 +29,16 @@ export const PaymentScreen = (props:any) => {
                     if(val){
                     verifyPaymentLink(body,val)
                     .then(res => {
-                        console.log(res)
                         if(res.success){
                             props.navigation.navigate('Confirmation',{order:res})
-                            console.log(res);
                         }
                     })
                     .catch(
-                        err=>console.log(err)
+                        err=>{}
                     )
                     }
                 })
-                .catch(err=>console.log(err))
+                .catch(err=>{})
         }
     
         appState.current = nextAppState;

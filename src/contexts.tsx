@@ -10,7 +10,6 @@ export const UserContextProvider = ({children}:any) => {
     const updateUser = (user:any) => setuser(user) ;
 
     useEffect(() => {
-        console.log('use-effect',user)
         if(user.detailsEntered){
         AsyncStorage.setItem('user',JSON.stringify(user))
         }
@@ -20,11 +19,9 @@ export const UserContextProvider = ({children}:any) => {
         AsyncStorage.getItem('user').then(
             value => {
                 if(value){
-                    console.log('first ',value);
                     setuser(JSON.parse(value))
                     AsyncStorage.getItem('jwt').then(
                         value=>{
-                            console.log(value);
                         }
                     )
                 }

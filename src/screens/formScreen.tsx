@@ -86,7 +86,6 @@ export const FormScreen = (props:any) => {
     }, [departmentselectedIndex]);
 
     const validateForm = (body:any) => {
-        console.log(body);
         if(!body.name){
             ToastAndroid.show('Please enter a name', ToastAndroid.SHORT)
             return false
@@ -130,12 +129,6 @@ export const FormScreen = (props:any) => {
                 }
             })
             .catch(err=>{})
-            // const jwt = await AsyncStorage.getItem('jwt') 
-            // console.log(jwt);
-            // if(jwt){
-            //     fillDetails(body,jwt)
-            //     .catch(err=>{})
-            // }
         }
 
     }
