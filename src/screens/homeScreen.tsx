@@ -55,7 +55,6 @@ export const HomeScreen  = (props:any) => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     useEffect(()=>{
-        setSelectedIndex(new IndexPath(0))
         var timer = setInterval(()=>setDate(new Date()),1000); 
 
 
@@ -63,6 +62,10 @@ export const HomeScreen  = (props:any) => {
             clearInterval(timer); 
         }
     }) 
+
+    useEffect(() => {
+        setSelectedIndex(new IndexPath(0))
+    }, []);
 
     const bookApi = () => {
         const body = {
@@ -88,7 +91,7 @@ export const HomeScreen  = (props:any) => {
 
     const generateLink = () => {
         const body = {
-            quantity:selectedIndex.row + 1,
+            amount:selectedIndex.row + 1,
             date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
         }
         setpaymentInProgress(true)
@@ -100,7 +103,10 @@ export const HomeScreen  = (props:any) => {
                     {   
                         setpaymentInProgress(false);
                         props.navigation.navigate('Payment',{payment:res})
-                    })
+                    }) 
+                .catch(err=>{
+                    console.log(err);
+                })
                 }
             }
         )

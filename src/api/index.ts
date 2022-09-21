@@ -174,6 +174,32 @@ export const generatePaymentLink = async (body:any,jwt:string) => {
         }
     }
     catch(err){
-        throw err
+        throw new Error('There was some error. Please try again')
+    }
+} 
+
+export const verifyPaymentLink = async (body:any,jwt:string) => {
+    try{
+        const response = await fetch(`${host}/book/verifypayment`,
+        {
+            method:'POST', 
+            headers:{
+                'Authorization':`Bearer ${jwt}`, 
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(body) 
+        
+        }
+        ) 
+        if(response.ok){
+            const result = await response.json()
+            return result
+        }
+        else{
+            throw new Error('There was an error! Please try again')
+        }
+    }
+    catch(err){
+        throw new Error('There was some error. Please try again')
     }
 }

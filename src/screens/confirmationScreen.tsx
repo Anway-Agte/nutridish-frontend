@@ -23,7 +23,7 @@ const Footer = (props:any) => (
 export const ConfirmationScreen = (props:any) => {
 
   useEffect(() => {
-    // console.log(props.route.params.order.data.booking)
+    console.log(props.route.params.order.data)
   }, []);
 
     return(
