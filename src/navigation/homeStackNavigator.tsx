@@ -58,7 +58,7 @@ export const HomeNavigator = () => {
                     backgroundColor:'#dff5f7' 
                 }
             }}
-            initialRouteName="Form"
+            initialRouteName="Register"
             >
                 <Stack.Screen 
                     options={{headerShown:false}}
