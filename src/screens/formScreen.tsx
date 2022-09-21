@@ -157,26 +157,26 @@ export const FormScreen = (props:any) => {
         }
     }
 
-    const confirmBooking = () => {
-        const body = {
-            name:name, 
-            contact:mobile, 
-            building:bldg.name,
-            department:department.department,
-            floor: floor.floor,
-            room: room, 
-            date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
-        }
+    // const confirmBooking = () => {
+    //     const body = {
+    //         name:name, 
+    //         contact:mobile, 
+    //         building:bldg.name,
+    //         department:department.department,
+    //         floor: floor.floor,
+    //         room: room, 
+    //         date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
+    //     }
 
-        if(validateForm(body)){
+    //     if(validateForm(body)){
 
-            book({...body,paymentMode:'Pay On Delivery'}).then(res =>
-            props.navigation.navigate('Confirmation',{date: date.getHours() < 11 ? `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` 
-                : `${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}` 
-                })
-        ).catch(err => ToastAndroid.show('There was an unexpected error, please try again', ToastAndroid.SHORT) );
-            }
-    }
+    //         book({...body,paymentMode:'Pay On Delivery'}).then(res =>
+    //         props.navigation.navigate('Confirmation',{date: date.getHours() < 11 ? `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` 
+    //             : `${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}` 
+    //             })
+    //     ).catch(err => ToastAndroid.show('There was an unexpected error, please try again', ToastAndroid.SHORT) );
+    //         }
+    // }
     return(
         <View style={styles.container}>
             <Card

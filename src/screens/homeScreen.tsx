@@ -1,9 +1,11 @@
-import {View, StyleSheet, ImageBackground, Image, AppState, Linking} from 'react-native';
-import {Button, Card, IndexPath, Layout, List, ListItem, Select, SelectItem, Text} from '@ui-kitten/components';
+import {View, StyleSheet, ImageBackground, Image, AppState} from 'react-native';
+import {Button, Card, IndexPath, Layout, List, ListItem, Select, SelectItem, Spinner, Text} from '@ui-kitten/components';
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { book, generatePaymentLink } from '../api';
+import * as Linking from 'expo-linking';
 
-const img = {uri:"../../assets/bgimg.jpg"}
 
 export const Header = (props:any) => (
     <View {...props}>
@@ -29,6 +31,7 @@ export const HomeScreen  = (props:any) => {
 
     const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
 
+    const [paymentInProgress, setpaymentInProgress] = useState<boolean>(false);
     // const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
     // useEffect(() => {
@@ -52,6 +55,7 @@ export const HomeScreen  = (props:any) => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     useEffect(()=>{
+        setSelectedIndex(new IndexPath(0))
         var timer = setInterval(()=>setDate(new Date()),1000); 
 
 
@@ -59,6 +63,51 @@ export const HomeScreen  = (props:any) => {
             clearInterval(timer); 
         }
     }) 
+
+    const bookApi = () => {
+        const body = {
+            quantity: selectedIndex.row+1,
+            paymentMode: 'Pay On Delivery', 
+            date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
+        } 
+        setpaymentInProgress(true)
+        AsyncStorage.getItem('jwt')
+        .then(value=>{
+            if(value){
+            book(body,value)
+            .then(
+                res => {
+                    setpaymentInProgress(false)
+                    props.navigation.navigate('Confirmation',{order:res})
+                }
+            )
+        }
+        })
+        .catch(err=>setpaymentInProgress(false))
+    } 
+
+    const generateLink = () => {
+        const body = {
+            quantity:selectedIndex.row + 1,
+            date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
+        }
+        setpaymentInProgress(true)
+        AsyncStorage.getItem('jwt').then(
+            value=>{
+                if(value){
+                generatePaymentLink(body,value)
+                .then(res=>
+                    {   
+                        setpaymentInProgress(false);
+                        props.navigation.navigate('Payment',{payment:res})
+                    })
+                }
+            }
+        )
+        .catch(err=>{
+            setpaymentInProgress(false)
+        })
+    }
 
     return(
         <Layout style={styles.container}>
@@ -80,6 +129,7 @@ export const HomeScreen  = (props:any) => {
                     placeholder={'Quantity'}
                     selectedIndex={selectedIndex}
                     onSelect={(index:any) => setSelectedIndex(index)}
+                    disabled={paymentInProgress}
                 >
                     {
                         [
@@ -97,11 +147,27 @@ export const HomeScreen  = (props:any) => {
                         margin:6,
                         flex:1
                     }}
-                    size='large'
+                    size='medium'
                     appearance='outline'
-                    onPress={()=>Linking.openURL('upi://pay?pa=rohitshelke11@okhdfcbank&pn=Rohit%20Shelke&am=1.00&cu=INR&aid=uGICAgIDAuKmPBg')}
+                    disabled={paymentInProgress}
+                    onPress={()=>generateLink()}
                 >
-                    Book A Dish    
+                    UPI Payment     
+                </Button>
+            </Layout>
+            <Layout style={styles.row}>
+                <Button
+                    status='info'
+                    style={{
+                        margin:6,
+                        flex:1
+                    }}
+                    size='medium'
+                    appearance='outline'
+                    disabled={paymentInProgress}
+                    onPress={()=>bookApi()}
+                >
+                    Cash on Delivery    
                 </Button>
             </Layout>
             <Layout style={{...styles.row,width:'80%'}}>
@@ -120,6 +186,9 @@ export const HomeScreen  = (props:any) => {
                 ***
             </Text>
             </Layout>
+            {
+                paymentInProgress ? <Spinner style={styles.loading} /> : <></>
+            }
         </Layout>
     )
 } 
@@ -151,5 +220,14 @@ const styles = StyleSheet.create({
     }, 
     input:{
         flex:1,
-    }
+    }, 
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
 })

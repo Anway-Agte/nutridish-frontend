@@ -1,11 +1,12 @@
 const host = 'https://nutri-dish.herokuapp.com'
 
-export const book = async (body:any) => {
+export const book = async (body:any,jwt:string) => {
     try{
         const response = await fetch(`${host}/book`, {
             method:'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${jwt}`
             },
             body: JSON.stringify(body) ,
         });
@@ -20,7 +21,6 @@ export const book = async (body:any) => {
         }
     }
     catch(err){
-        console.log(err);
         throw(err)
     }
 } 
@@ -36,11 +36,9 @@ export const getBuildings = async () => {
             return result;
         }
         else{
-            console.log('here')
         }
     } 
     catch(err){
-        console.log(err);
         throw(err);
     }
 } 
@@ -104,7 +102,6 @@ export const sendEmailForVerification = async (email:string) => {
 
 export const SignUserIn = async (payload:any) =>{
     try{
-        console.log('here')
         const response = await fetch(`${host}/signin`,{
             method:"POST",
             headers: {
@@ -152,5 +149,31 @@ export const fillDetails = async(body:any,jwt:string) => {
     }
     catch(err){
         throw new Error('There was some error. Please try again')
+    }
+} 
+
+export const generatePaymentLink = async (body:any,jwt:string) => {
+    try{
+        const response = await fetch(`${host}/book/paymentlink`,
+        {
+            method:'POST', 
+            headers:{
+                'Authorization':`Bearer ${jwt}`, 
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(body) 
+        
+        }
+        ) 
+        if(response.ok){
+            const result = await response.json()
+            return result
+        }
+        else{
+            throw new Error('There was an error! Please try again')
+        }
+    }
+    catch(err){
+        throw err
     }
 }

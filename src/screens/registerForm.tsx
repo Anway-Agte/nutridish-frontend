@@ -110,6 +110,7 @@ export const RegisterForm = (props:any) => {
                 setloading(false);
                 setotpSent(res);
                 countDown();
+                
             }
         ).catch(err=>ToastAndroid.show('Error! Please Try Again',ToastAndroid.SHORT))
     }

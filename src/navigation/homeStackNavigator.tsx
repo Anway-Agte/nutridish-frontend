@@ -6,9 +6,10 @@ import { ConfirmationScreen } from "../screens/confirmationScreen";
 import {RegisterForm} from '../screens/registerForm';
 import { UpiPaymentScreen } from "../screens/upiPaymentScreen";
 import { UserContext } from "../contexts";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { BottomNavigation, BottomNavigationTab, Icon, Text } from "@ui-kitten/components";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BookStackNavigator } from "./bookStackNavigator";
 
 const Stack = createNativeStackNavigator(); 
 
@@ -32,7 +33,9 @@ export const HomeNavigator = () => {
 
     const {user,updateUser} = useContext(UserContext)
 
-
+    useEffect(() => {
+        console.log('hello')
+    }, []);
     
     return (
         <>
@@ -48,7 +51,7 @@ export const HomeNavigator = () => {
                 }}
                 tabBar={props => <BottomTabBar {...props}/>}
                 >
-                <Tab.Screen name='Home' component={HomeScreen} />
+                <Tab.Screen name='BookNavigator' component={BookStackNavigator} />
             </Tab.Navigator>
             : 
             <Stack.Navigator

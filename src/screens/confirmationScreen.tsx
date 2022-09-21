@@ -1,63 +1,69 @@
-import { View, StyleSheet } from "react-native"
-import {Button, Card, Icon, Text} from '@rneui/themed'
+import { StyleSheet,Image, View } from "react-native"
+import { Button, Card, Layout, Text } from "@ui-kitten/components"
+import { useEffect } from "react";
+
+
+const Header = (props:any) => (
+  <View style={{flex:1,alignItems:'center', justifyContent:'center'}} {...props}>
+    <Text 
+      status="success" category='h6'>
+      ORDER CONFIRMATION</Text>
+  </View>
+); 
+
+const Footer = (props:any) => (
+  <View {...props}>
+    <Text status="info">Your order has been confirmed with </Text>
+    <Text status="info">Order ID : <Text  category='h6'>{props.id}</Text></Text>
+    <Text status="danger">Your order will be delivered on {props.date} by 12:15 PM</Text>
+    <Text appearance="hint">Please show this QR during the time of delivery</Text>
+  </View>
+);
 
 export const ConfirmationScreen = (props:any) => {
-    return(
-        <View style={styles.container}>
-          <Card containerStyle={{elevation:10, width:'90%',borderRadius:16}}>
-          <Card.Title style={{color:'#13cf2f'}} h2>Order Confirmation</Card.Title>
-          <Card.Divider />
-          <Card.Title h4 style={{ marginBottom: 10 }}>
-          {`Your dish will be delivered on`}
-          </Card.Title>
-          <Card.Title h4 style={{ marginBottom: 10, color:'red' }}>
-          {`${props.route.params.date}`}
-          </Card.Title>
-          <Card.Image
-            containerStyle={{borderRadius:16,borderBottomWidth:0}}
-            style={{ paddingBottom:4 , height:300, borderRadius:16}}
-            resizeMode='stretch'
-            source={{uri:'https://res.cloudinary.com/dpp7elupy/image/upload/v1662890116/nutridish/Photo_from_%E0%A4%B5%E0%A5%87%E0%A4%A6_1_ryiboa.jpg'}}
-          />
-          <Card.Divider/>
 
-          <Button
-            color='#4290f5'
-            // icon={
-            // //   <Icon
-            // //     name="code"
-            // //     color="#ffffff"
-            // //     iconStyle={{ marginRight: 10 }}
-            // //   />
-            // }
-            onPress={()=>props.navigation.navigate('Home')}
-            containerStyle={{
-                borderRadius:16,
-                elevation:10
-            }}
-            buttonStyle={{
-              borderRadius: 16,
-              marginLeft: 0,
-              marginRight: 0,
-              marginBottom: 0,
-              paddingVertical:10
-            }}
-            titleStyle={{
-              fontSize:23,
-              fontWeight:'bold'
-            }}
-            title="GO BACK TO HOME SCREEN"
-          />
-        </Card>
-        </View>
+  useEffect(() => {
+    // console.log(props.route.params.order.data.booking)
+  }, []);
+
+    return(
+        <Layout style={styles.container}>
+            <Card status="success" footer={(prop:any)=>
+              <Footer {...prop} 
+                id={props.route?.params?.order?.data?.booking?._id}
+                date={props.route?.params?.order?.data?.booking?.date}
+            />}  style={styles.card}>
+              <Image
+              style={styles.qr}
+              resizeMode="cover"
+              source={{
+                uri:props.route.params.order.data.qr
+              }}
+              
+              />
+            </Card>
+        </Layout>
     )
 } 
 
 const styles = StyleSheet.create({
     container : {
-        flex:1,
-        paddingHorizontal:6,
-        alignItems: 'center', 
-        justifyContent: 'center'
+      flex:1,
+      flexDirection:'column',
+      alignItems:'center',
+      justifyContent:'center',
+      backgroundColor:'#EDF1F7',
     }, 
+    card:{
+      elevation:20, 
+      borderRadius: 24,
+      margin:8,
+      width:'80%',
+      alignItems:'center',
+      justifyContent:'center',
+    },
+    qr:{
+      height:300,
+      width:300
+    }
 })
