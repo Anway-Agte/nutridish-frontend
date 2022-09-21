@@ -11,7 +11,9 @@
   "dependencies": {
     "@eva-design/eva": "^2.1.1",
     "@expo/vector-icons": "^13.0.0",
+    "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-clipboard/clipboard": "^1.11.0",
+    "@react-navigation/bottom-tabs": "^6.4.0",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
     "@rneui/base": "^4.0.0-rc.6",
@@ -34,13 +36,15 @@
     "react-native-select-dropdown": "^2.0.4",
     "react-native-svg": "12.3.0",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-web": "~0.18.7"
+    "react-native-web": "~0.18.7",
+    "sync-storage": "^0.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@types/react": "~18.0.14",
     "@types/react-native": "~0.69.1",
     "@types/styled-components": "^5.1.26",
+    "@types/sync-storage": "^0.4.0",
     "typescript": "~4.3.5"
   },
   "private": true

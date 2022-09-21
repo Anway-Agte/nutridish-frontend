@@ -1,32 +1,155 @@
-import {View, StyleSheet, ImageBackground} from 'react-native';
-import {Text,Image} from '@rneui/themed';
-import { Button } from "@rneui/themed";
+import {View, StyleSheet, ImageBackground, Image, AppState, Linking} from 'react-native';
+import {Button, Card, IndexPath, Layout, List, ListItem, Select, SelectItem, Text} from '@ui-kitten/components';
+import { useIsFocused } from '@react-navigation/native';
+import { useEffect, useRef, useState } from 'react';
 
 const img = {uri:"../../assets/bgimg.jpg"}
 
-export const HomeScreen  = (props:any) => {
-return(
-            <ImageBackground 
-                source={require('../../assets/bgimg.jpg')} 
-                resizeMode='cover' 
-                style={styles.container} >
-            {/* <Text style={{marginTop: 50, marginLeft:2}} h2>Nutri Dish</Text>
-            <Text style={{marginTop:20, marginBottom:40}}>Lorem ipsumas dolor sit amet consectetur adipisicing elit. Temporibus aperiam quia impedit cupiditate dolore neque nihil natus, reprehenderit necessitatibus sit provident. Tempora quo, autem modi quibusdam sit maxime laboriosam aliquid?</Text> */}
-            <Button 
-                containerStyle={{width:'78%', height:70, borderRadius:16,marginTop:'54%'}} 
-                buttonStyle={{borderRadius:16,width:'100%',height:'100%',borderWidth:4, borderColor:'red', paddingBottom:10}} 
-                titleStyle={{fontWeight:'bold', fontSize:20}}  
-                onPress={()=>{props.navigation.navigate('Form')}} color='#4290f5' title='BOOK A NUTRI DISH !'/>
-            </ImageBackground>
-
+export const Header = (props:any) => (
+    <View {...props}>
+        <Text category='h6' status='info' >Today's Menu Contains</Text>
+    </View>
 )
+
+const renderItem = ({ item, index }:any) => (
+    <ListItem title={`${item.title} ${index + 1}`}/>
+  );
+
+export const HomeScreen  = (props:any) => {
+
+    // const isFocused = useIsFocused();
+
+    // useEffect(() => {
+    //     console.log(isFocused);
+    // }, [isFocused])
+    
+    const appState = useRef(AppState.currentState) 
+
+    const [quantity, setquantity] = useState<number>(1);
+
+    const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
+
+    // const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+    // useEffect(() => {
+    //     const subscription = AppState.addEventListener("change", _handleAppStateChange);
+    //     return () => {
+    //       subscription.remove();
+    //     };
+    //   }, []);
+    
+    //   const _handleAppStateChange = (nextAppState:any) => {
+    //     console.log(appState);
+    //     if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+    //       console.log('App has come to the foreground!');
+    //     }
+    
+    //     appState.current = nextAppState;
+    //     setAppStateVisible(appState.current);
+    //     console.log('AppState', appState.current);
+    //   };
+    const [date,setDate] = useState(new Date());
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    useEffect(()=>{
+        var timer = setInterval(()=>setDate(new Date()),1000); 
+
+
+        return function cleanup(){
+            clearInterval(timer); 
+        }
+    }) 
+
+    return(
+        <Layout style={styles.container}>
+
+
+            <Image
+                source={require('../../assets/logo.png')}
+                resizeMode='contain'
+                style={{
+                    width:'100%',
+                    height:'30%'
+                }}
+            />
+            <Layout style={styles.row}>
+                <Select
+                    style={styles.input}
+                    label='Quantity'
+                    value={`${selectedIndex.row + 1}`}
+                    placeholder={'Quantity'}
+                    selectedIndex={selectedIndex}
+                    onSelect={(index:any) => setSelectedIndex(index)}
+                >
+                    {
+                        [
+                            ...Array(10)
+                          ].map((value:number,index: number) => (
+                            <SelectItem title={index + 1} key={index} />
+                          ))
+                    }
+                </Select>
+            </Layout>
+            <Layout style={styles.row}>
+                <Button
+                    status='success'
+                    style={{
+                        margin:6,
+                        flex:1
+                    }}
+                    size='large'
+                    appearance='outline'
+                    onPress={()=>Linking.openURL('upi://pay?pa=rohitshelke11@okhdfcbank&pn=Rohit%20Shelke&am=1.00&cu=INR&aid=uGICAgIDAuKmPBg')}
+                >
+                    Book A Dish    
+                </Button>
+            </Layout>
+            <Layout style={{...styles.row,width:'80%'}}>
+            <Text appearance='hint'>
+                *** An order placed right now will be delivered on
+            <Text status='danger' >
+            {
+                date.getHours() < 11 ? ` ${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} `
+                :` ${days[new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDay()]}, ${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()} `
+                } 
+                </Text>
+                by
+                <Text status='info' >
+                 {` 12:15 PM`}
+                </Text>
+                ***
+            </Text>
+            </Layout>
+        </Layout>
+    )
 } 
 
 const styles = StyleSheet.create({
     container : {
         flex:1,
-        paddingHorizontal: 4, 
+        flexDirection:'column',
         alignItems:'center',
-        justifyContent:'center'
+        justifyContent:'center',
+        backgroundColor:'#EDF1F7',
+    }, 
+    card: {
+        margin: 10,
+        borderRadius:24,
+        height:'50%',
+        padding:0
+      },
+    list:{
+        width:'100%'
+    }, 
+    row:{
+        flexDirection:'row',
+        backgroundColor:'#EDF1F7',
+        alignContent:'center',
+        width:'40%',
+        marginVertical:10
+        
+    }, 
+    input:{
+        flex:1,
     }
 })

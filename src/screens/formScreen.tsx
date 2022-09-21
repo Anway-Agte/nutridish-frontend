@@ -1,8 +1,11 @@
 import { View, StyleSheet, ToastAndroid} from "react-native"
-import {Button, Image, Input, Text} from '@rneui/themed'
-import { useEffect, useState } from "react"
-import { book, getBuildings, getDepartments, getFloors } from "../api"
+import { useContext, useEffect, useState } from "react"
+import { book, fillDetails, getBuildings, getDepartments, getFloors } from "../api"
 import SelectDropdown from "react-native-select-dropdown"
+import { Card, Layout,Input, Select, SelectItem, IndexPath, Button } from "@ui-kitten/components"
+import { Header } from "./registerForm"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { UserContext } from "../contexts"
 
 export const FormScreen = (props:any) => {
     const [name, setName] = useState('')
@@ -11,9 +14,15 @@ export const FormScreen = (props:any) => {
     const [floor, setfloor] = useState<any>({});
     const [room, setroom] = useState('');
     const [department, setdepartment] = useState<any>({});
-    const [buildings, setbuildings] = useState<any>([]);
-    const [departments, setdepartments] = useState<any>([])
-    const [floors, setfloors] = useState<any>([]);
+    const [buildings, setbuildings] = useState<any>(Array(0));
+    const [departments, setdepartments] = useState<any>(Array(0))
+    const [floors, setfloors] = useState<any>(Array(0));
+
+    const [bldgselectedIndex, setbldgselectedIndex] = useState(new IndexPath(0));
+    const [departmentselectedIndex, setdepartmentselectedIndex] = useState(new IndexPath(0));
+    const [floorselectedIndex, setfloorselectedIndex] = useState(new IndexPath(0));
+
+    const {user,updateUser} = useContext(UserContext);
 
     const [date,setDate] = useState(new Date());
 
@@ -39,27 +48,54 @@ export const FormScreen = (props:any) => {
     useEffect(() => {
         getFloors(bldg._id).then(
             res=>{
-                setfloors(res)}
+                setfloors(res)
+                setfloorselectedIndex(new IndexPath(0))
+            }
         )
     }, [bldg]);
 
     useEffect(() => {
         getDepartments(floor._id).then(
-            res=>setdepartments(res)
-        ).catch()
+            res=>
+            {setdepartments(res)
+            setdepartmentselectedIndex(new IndexPath(0))
+            }
+            ).catch()
     }, [floor]);
 
+
+    useEffect(() => {
+        if(buildings.length){
+            setBldg(buildings[bldgselectedIndex.row])
+        }
+        //
+    }, [bldgselectedIndex]);
+
+    useEffect(() => {
+        if(floors?.length){
+            setfloor(floors[floorselectedIndex.row])
+        }
+        //
+    }, [floorselectedIndex]);
+
+    useEffect(() => {
+        if(departments?.length){
+            setdepartment(departments[departmentselectedIndex.row])
+        }
+        //
+    }, [departmentselectedIndex]);
+
     const validateForm = (body:any) => {
-        
+        console.log(body);
         if(!body.name){
             ToastAndroid.show('Please enter a name', ToastAndroid.SHORT)
             return false
         }
-        else if(body.contact.length !== 10 || !body.contact){
+        else if(body.contact.length !== 13||!body.contact){
             ToastAndroid.show('Please enter a valid mobile number', ToastAndroid.SHORT)
             return false
         }
-        else if(!body.building || !body.department || !body.floor){
+        else if(!body.buildingId || !body.departmentId || !body.floorId){
             ToastAndroid.show('Please select all the field values', ToastAndroid.SHORT)
             return false
         }
@@ -70,6 +106,38 @@ export const FormScreen = (props:any) => {
         else{
             return true
         }
+    }
+
+    const submitForm = async () => {
+        const body = {
+            name:name, 
+            contact:`+91${mobile}`, 
+            buildingId:bldg._id,
+            departmentId:department._id,
+            floorId: floor._id,
+            room: room, 
+        }
+        if(validateForm(body)){
+
+            AsyncStorage.getItem('jwt')
+            .then((jwt)=>{
+                if(jwt){
+                    fillDetails(body,jwt)
+                    .then(res => {
+                        updateUser(res.data)
+                    })
+                    .catch(err=>{})
+                }
+            })
+            .catch(err=>{})
+            // const jwt = await AsyncStorage.getItem('jwt') 
+            // console.log(jwt);
+            // if(jwt){
+            //     fillDetails(body,jwt)
+            //     .catch(err=>{})
+            // }
+        }
+
     }
 
     const initializePayment = () => {
@@ -111,111 +179,104 @@ export const FormScreen = (props:any) => {
     }
     return(
         <View style={styles.container}>
-
-            <Text style={{paddingHorizontal:1}} h4>
-                An order placed right now will be delivered on
-            </Text>
-            <Text style={{marginBottom:10,paddingHorizontal:5}} h4>
-            <Text style={{color:'red'}} h4>
-            {
-                date.getHours() < 11 ? ` ${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} `
-                :` ${days[new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDay()]}, ${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()} `
-                } 
-                </Text>
-                by
-                <Text h4 style={{color:'#0335ff'}}>
-                 {` 12:15 PM`}
-                </Text>
-            </Text>
-
-            <View style={{flexDirection:'row'}}>
-            <Input 
-                containerStyle={{flex:1}} 
-                inputContainerStyle={{borderBottomWidth:0}} 
-                label="Name" 
-                onChangeText={text => setName(text)} 
-                value={name} 
-                style={styles.input} 
-                placeholder='Name'
-            />
-            <Input 
-                containerStyle={{flex:1}} 
-                inputContainerStyle={{borderBottomWidth:0}} 
-                label="Contact" 
-                keyboardType="numeric" 
-                onChangeText={text => setMobile(text)} 
-                value={mobile} 
-                inputStyle={styles.input} 
-                placeholder='Mobile Number'/>
-            </View>
-           
-            <View style={{flexDirection:'row',paddingHorizontal:2,}}>
-            <SelectDropdown 
-                defaultButtonText="Select Building"
-                buttonStyle={{...styles.dropdown1BtnStyle,flex:1}}
-                buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                data={buildings||[]} 
-                onSelect={(selectedItem,index)=>{setBldg(selectedItem)}}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                    return selectedItem.name
-                }}
-                rowTextForSelection={(item, index) => {
-                    return item.name
-                }}/>
-            <SelectDropdown 
-                defaultButtonText="Select Floor"
-                buttonStyle={{...styles.dropdown1BtnStyle,flex:1}}
-                buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                searchInputStyle={{marginVertical:2}}
-                data={floors||[]} 
-                onSelect={(selectedItem,index)=>{setfloor(selectedItem)}}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                    return `${selectedItem.floor} Floor`
-                }}
-                rowTextForSelection={(item, index) => {
-                    return `${item.floor} Floor`
-                }} 
-                disabled={Object.keys(bldg).length == 0}
-                />
-            </View>
-            <SelectDropdown 
-                defaultButtonText="Select Department"
-                buttonStyle={styles.dropdown1BtnStyle}
-                buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                searchInputStyle={{marginVertical:2}}
-                data={departments||[]} 
-                onSelect={(selectedItem,index)=>{setdepartment(selectedItem)}}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                    return selectedItem.department
-                }}
-                rowTextForSelection={(item, index) => {
-                    return item.department
-                }} 
-                disabled={Object.keys(floor).length == 0}
-                />
-            <Input 
-                inputContainerStyle={{borderBottomWidth:0}} 
-                label="Room" 
-                keyboardType="numeric" 
-                onChangeText={text => setroom(text)} 
-                value={room} 
-                style={styles.input} 
-                placeholder='Room'
-            />
-            <Button 
-                containerStyle={{width:'78%', height:50, borderRadius:16}} 
-                buttonStyle={{borderRadius:16,width:'100%',height:'100%'}} 
-                onPress={()=>initializePayment()}
-                color='primary' 
-                title='MAKE UPI PAYMENT'
-            />
-            <Button 
-                containerStyle={{width:'78%', height:50, borderRadius:16, marginTop:10}} 
-                buttonStyle={{borderRadius:16,width:'100%',height:'100%'}}  
-                onPress={()=>confirmBooking()} 
-                color='secondary' 
-                title='PAY ON DELIVERY'
-            />
+            <Card
+                style={styles.card} 
+                status='success'
+                header={({...props})=><Header {...props} text='Enter your Details' />}
+            >
+                <Layout style={styles.row}>
+                <Input
+                        style={styles.input}
+                        placeholder='Name'
+                        value={name}
+                        onChangeText={val=>setName(val)}
+                        label='Name'
+                        // disabled={verifyLoading}
+                    />
+                    <Input
+                        style={styles.input}
+                        placeholder='Mobile Number'
+                        value={mobile}
+                        onChangeText={val=>setMobile(val)}
+                        keyboardType='numeric'
+                        maxLength={10}
+                        label='Mobile Number'
+                        // disabled={verifyLoading}
+                    />
+                </Layout>
+                <Layout style={styles.row} level='1'>
+                    <Select
+                        label='Select Building'
+                        placeholder={'Select Building'}
+                        style={styles.input}
+                        selectedIndex={Object.keys(bldg).length?bldgselectedIndex:undefined}
+                        value={bldg.name}
+                        onSelect={(index:any)=>setbldgselectedIndex(index)}
+                    >
+                        {
+                            buildings?.map(
+                               (bldg:any,index:number) => <SelectItem title={bldg.name} key={index}/>
+                            )
+                        }
+                    </Select>                    
+                    <Select
+                        label='Select Floor'
+                        placeholder={'Select Floor'}
+                        style={styles.input}
+                        selectedIndex={Object.keys(floor).length?floorselectedIndex:undefined}
+                        value={floor.floor}
+                        disabled={Object.keys(bldg).length == 0}
+                        onSelect={(index:any)=>setfloorselectedIndex(index)}
+                    >
+                        {
+                            floors?.map(
+                               (floor:any,index:number) => <SelectItem title={floor.floor} key={index}/>
+                            )
+                        }
+                    </Select>
+                </Layout>
+                <Layout style={styles.row} level='1'>
+                    <Select
+                        label='Select Department'
+                        placeholder={'Select Department'}
+                        style={styles.input}
+                        selectedIndex={Object.keys(department).length?departmentselectedIndex:undefined}
+                        value={department.department||''}
+                        onSelect={(index:any)=>setdepartmentselectedIndex(index)}
+                        disabled={Object.keys(floor).length===0}
+                    >
+                        {
+                            departments?.map(
+                               (dep:any,index:number) => <SelectItem title={dep.department} key={index}/>
+                            )
+                        }
+                    </Select>                    
+                </Layout>
+                <Layout style={styles.row} level='1'>
+                <Input
+                        style={styles.input}
+                        placeholder='Room Number'
+                        value={room}
+                        onChangeText={val=>setroom(val)}
+                        keyboardType='numeric'
+                        maxLength={10}
+                        label='Room Number'
+                        // disabled={verifyLoading}
+                    />               
+                </Layout>
+                <Layout style={{...styles.row,justifyContent:'center',marginTop:12}} level='1'>
+                    <Button 
+                        onPress={()=>submitForm()}
+                        style={styles.text} 
+                        status='success'
+                        >
+                        CONFIRM DETAILS
+                    </Button>
+                </Layout>
+                <Layout style={styles.row}>
+                        
+                </Layout> 
+            </Card>
         </View>
     )
 } 
@@ -225,25 +286,20 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems: 'center', 
         justifyContent: 'center'
-    }, 
+    },
     input: {
-        backgroundColor: 'white', 
-        borderRadius: 16, 
-        fontSize: 14, 
-        padding: 10,
-        borderBottomColor: '#C5C5C5',
-        flex:1
+        flex: 1,
+        margin: 1,
     }, 
-    dropdown1BtnStyle: {
-        width: '96%',
-        height: 45,
-        backgroundColor: '#FFF',
-        borderRadius: 16,
-        marginVertical:6,
-        marginHorizontal:2
-      },
-      dropdown1BtnTxtStyle: {color: '#444', textAlign: 'left'},
-      dropdown1DropdownStyle: {backgroundColor: '#EFEFEF'},
-      dropdown1RowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
-      dropdown1RowTxtStyle: {color: '#444', textAlign: 'left'},
+      card:{
+        elevation: 30,
+        width:'90%'
+    },
+    row:{
+        flexDirection: 'row',
+        marginVertical:1
+    },
+    text:{
+        margin:1
+    }
 })

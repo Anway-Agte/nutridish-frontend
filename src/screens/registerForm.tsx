@@ -2,14 +2,15 @@ import { View, ImageBackground, StyleSheet, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button, Card , Input, Layout, Spinner, Text} from '@ui-kitten/components';
 import { sendEmailForVerification, SignUserIn } from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Header = (props:any) => (
+export const Header = (props:any) => (
     <View {...props}>
-      <Text status='info' category='h6'>Register your email</Text>
+      <Text  category='h6'>{props.text}</Text>
     </View>
   );
 
-const Footer = (props:any) => {
+export const Footer = (props:any) => {
 
     const onRequestPress = ()=>{
         if(props.validateEmail()){
@@ -66,9 +67,8 @@ const LoadingIndicator = (props:any) => (
     </View>
   );
 
-export const RegisterForm = () => {
+export const RegisterForm = (props:any) => {
     
-    const [mobile, setmobile] = useState<string>('');
     const [email, setemail] = useState<string>('');
     const [emailError, setemailError] = useState<boolean>(false);
     const [emailSent, setemailSent] = useState<boolean>(false);
@@ -119,7 +119,11 @@ export const RegisterForm = () => {
         SignUserIn({email:email,otp:otp}).
         then(res=>{
             setverifyLoading(false);
-            console.log(res)
+            AsyncStorage.setItem('jwt',res.token)
+            .then(
+                res=>ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
+            )
+            props.navigation.navigate('Form')
         })
         .catch(
            err=>{

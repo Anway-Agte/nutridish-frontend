@@ -6,6 +6,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AppNavigator } from './src/navigation';
 import { ApplicationProvider } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
+import { useEffect } from 'react';
+import { UserContextProvider } from './src/contexts';
 
 const myTheme = createTheme({
   lightColors: {
@@ -20,12 +22,15 @@ const myTheme = createTheme({
 
 
 export default function App() {
+
+
   return (
+    <UserContextProvider>
     <ApplicationProvider {...eva} theme={eva.light}>
        <AppNavigator/>
       <StatusBar style="dark" />
     </ApplicationProvider>
-
+    </UserContextProvider>
   );
 }
 

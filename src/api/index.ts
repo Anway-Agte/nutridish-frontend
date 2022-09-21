@@ -1,4 +1,4 @@
-const host = 'https://nutridish-backend.herokuapp.com'
+const host = 'https://nutri-dish.herokuapp.com'
 
 export const book = async (body:any) => {
     try{
@@ -26,6 +26,7 @@ export const book = async (body:any) => {
 } 
 
 export const getBuildings = async () => {
+    console.log(`${host}/delivery/buildings`);
     try{
         const response = await fetch(`${host}/delivery/buildings`,{
             method:'GET',
@@ -35,6 +36,7 @@ export const getBuildings = async () => {
             return result;
         }
         else{
+            console.log('here')
         }
     } 
     catch(err){
@@ -125,5 +127,30 @@ export const SignUserIn = async (payload:any) =>{
     }
     catch(err){
         throw err
+    }
+} 
+
+export const fillDetails = async(body:any,jwt:string) => {
+    console.log(`${host}/user`)
+    try{
+        const response = await fetch(`${host}/user`, {
+            method:'PUT', 
+            headers:{
+                'Authorization':`Bearer ${jwt}`, 
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(body) 
+        })
+
+        if(response.ok){
+            const result = await response.json()
+            return result 
+        }
+        else{
+            throw new Error('Error')
+        }
+    }
+    catch(err){
+        throw new Error('There was some error. Please try again')
     }
 }
