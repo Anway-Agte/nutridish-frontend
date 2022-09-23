@@ -1,4 +1,4 @@
-import {StyleSheet,Linking, AppState} from 'react-native'
+import {StyleSheet,Linking, AppState, BackHandler} from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Layout, Spinner, Text } from '@ui-kitten/components'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -11,8 +11,18 @@ export const PaymentScreen = (props:any) => {
 
     useEffect(() => {
         const subscription = AppState.addEventListener("change", _handleAppStateChange);
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            props.navigation.goBack(null);
+            return true;
+          }); 
+      
         return () => {
             subscription.remove();
+            BackHandler.removeEventListener('hardwareBackPress', () => {
+                props.navigation.goBack(null);
+                return true;
+              });
+            
         };
 
       }, []);

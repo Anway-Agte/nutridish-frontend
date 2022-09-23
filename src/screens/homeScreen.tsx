@@ -1,10 +1,11 @@
 import {View, StyleSheet, ImageBackground, Image, AppState, BackHandler} from 'react-native';
 import {Button, Card, IndexPath, Layout, List, ListItem, Select, SelectItem, Spinner, Text} from '@ui-kitten/components';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { book, generatePaymentLink } from '../api';
 import * as Linking from 'expo-linking';
+import { UserContext } from '../contexts';
 
 
 export const Header = (props:any) => (
@@ -30,6 +31,8 @@ export const HomeScreen  = (props:any) => {
  
     const [date,setDate] = useState(new Date());
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    const {user,updateUser} = useContext(UserContext);
 
     useEffect(()=>{
         var timer = setInterval(()=>setDate(new Date()),1000); 
@@ -105,6 +108,7 @@ export const HomeScreen  = (props:any) => {
                     height:'30%'
                 }}
             />
+            <Text status='info' category='h6'>Ordering as {user.isStaff ? 'Staff':'Student'}</Text>
             <Layout style={styles.row}>
                 <Select
                     style={styles.input}
@@ -123,7 +127,8 @@ export const HomeScreen  = (props:any) => {
                           ))
                     }
                 </Select>
-            </Layout>
+            </Layout> 
+            <Text status='danger' category='h6'>Amount to be paid : ₹ {(selectedIndex.row+1)*20}</Text>
             <Layout style={styles.row}>
                 <Button
                     status='success'
@@ -138,8 +143,6 @@ export const HomeScreen  = (props:any) => {
                 >
                     UPI Payment     
                 </Button>
-            </Layout>
-            <Layout style={styles.row}>
                 <Button
                     status='info'
                     style={{
@@ -154,17 +157,20 @@ export const HomeScreen  = (props:any) => {
                     Cash on Delivery    
                 </Button>
             </Layout>
+            <Layout style={styles.row}>
+
+            </Layout>
             <Layout style={{...styles.row,width:'80%'}}>
             <Text appearance='hint'>
                 *** An order placed right now will be delivered on
-            <Text status='danger' >
+            <Text status='danger' category='h6' >
             {
                 date.getHours() < 11 ? ` ${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} `
                 :` ${days[new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDay()]}, ${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()} `
                 } 
                 </Text>
                 by
-                <Text status='info' >
+                <Text status='info' category='h6' >
                  {` 12:15 PM`}
                 </Text>
                 ***
@@ -180,7 +186,6 @@ export const HomeScreen  = (props:any) => {
 const styles = StyleSheet.create({
     container : {
         flex:1,
-        flexDirection:'column',
         alignItems:'center',
         justifyContent:'center',
         backgroundColor:'#EDF1F7',
@@ -198,7 +203,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         backgroundColor:'#EDF1F7',
         alignContent:'center',
-        width:'40%',
+        width:'80%',
         marginVertical:10
         
     }, 

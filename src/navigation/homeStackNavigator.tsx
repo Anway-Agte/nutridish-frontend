@@ -5,11 +5,12 @@ import { FormScreen } from "../screens/formScreen";
 import { ConfirmationScreen } from "../screens/confirmationScreen";
 import {RegisterForm} from '../screens/registerForm';
 import { UserContext } from "../contexts";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BottomNavigation, BottomNavigationTab, Icon, Text } from "@ui-kitten/components";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BookStackNavigator } from "./bookStackNavigator";
 import { OrderHistory } from "../screens/orderHistory";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator(); 
 
@@ -34,24 +35,38 @@ export const HomeNavigator = () => {
 
     const {user,updateUser} = useContext(UserContext)
 
+    const [jwt, setjwt] = useState<string>('');
+
+
     useEffect(() => {
+        AsyncStorage.getItem('jwt')
+        .then(res=>{
+            if(res){
+            setjwt(res)
+            }})
+        .catch(err=>{})
     }, []);
+
+    useEffect(() => {
+        console.log(jwt);
+    }, [jwt]);
     
     return (
         <>
         {
-            user.detailsEntered ? 
+            user.detailsEntered && jwt ? 
             <Tab.Navigator
                 sceneContainerStyle={{
                     marginTop:Constants.statusBarHeight,
                     backgroundColor:'#dff5f7'
                 }}
                 screenOptions={{
-                    headerShown:false
+                    headerShown:false,
                 }}
                 tabBar={props => <BottomTabBar {...props}/>}
                 >
-                <Tab.Screen name='BookNavigator' component={BookStackNavigator} />
+                <Tab.Screen                     
+                    name='BookNavigator' component={BookStackNavigator} />
                 <Tab.Screen name='Orders' component={OrderHistory} />
             </Tab.Navigator>
             : 

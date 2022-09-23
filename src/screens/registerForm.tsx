@@ -1,13 +1,24 @@
-import { View, ImageBackground, StyleSheet, ToastAndroid } from 'react-native'
+import { View, ImageBackground, StyleSheet, ToastAndroid, Image } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, Card , Input, Layout, Spinner, Text} from '@ui-kitten/components';
+import { Button, Card , Input, Layout, Spinner, Text, } from '@ui-kitten/components';
 import { getUser, sendEmailForVerification, SignUserIn } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../contexts';
 
 export const Header = (props:any) => (
-    <View {...props}>
-      <Text  category='h6'>{props.text}</Text>
+    <View  {...props}>
+        <Layout >
+        <Image
+                source={require('../../assets/logo.png')}
+                resizeMode='cover'
+                style={{
+                    width:120,
+                    height:120,
+                    alignSelf:'center'
+                }}
+        />
+        </Layout>
+      <Text style={{alignSelf:'center'}} category='h6'>{props.text}</Text>
     </View>
   );
 
@@ -114,7 +125,9 @@ export const RegisterForm = (props:any) => {
                 countDown();
                 
             }
-        ).catch(err=>ToastAndroid.show('Error! Please Try Again',ToastAndroid.SHORT))
+        ).catch(err=>{
+            setloading(false);
+            ToastAndroid.show('Error! Please Try Again',ToastAndroid.SHORT)})
     }
 
     const verifyOTP = () => {
@@ -124,15 +137,20 @@ export const RegisterForm = (props:any) => {
             AsyncStorage.setItem('jwt',res.token)
             .then(
                 r=>{
-                getUser(res.token).then(user=>{
-                    if(user.detailsEntered){
-                        updateUser(user);
-                    }else{
-                        setverifyLoading(false);
-                        ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
-                        props.navigation.navigate('Form')
-                    } 
-                })        
+                setverifyLoading(false)
+                props.navigation.navigate('Form')
+                // getUser(res.token).then(user=>{
+                //     if(user.detailsEntered){
+                //         updateUser(user);
+                //     }else{
+                //         setverifyLoading(false);
+                //         ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
+                //         props.navigation.navigate('Form')
+                //     } 
+                // })
+                // .catch(err=>{
+                //     setverifyLoading(false)
+                // })        
               }
             )
             
@@ -163,6 +181,7 @@ export const RegisterForm = (props:any) => {
                 // header={Header} 
                 style={styles.card} 
                 status='success'
+                header={({...props})=><Header {...props} text='Enter your Email' />}
                 footer={(props:any)=>
                     <Footer 
                         {...props} 

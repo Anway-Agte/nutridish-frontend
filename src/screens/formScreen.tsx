@@ -2,7 +2,7 @@ import { View, StyleSheet, ToastAndroid} from "react-native"
 import { useContext, useEffect, useState } from "react"
 import { book, fillDetails, getBuildings, getDepartments, getFloors } from "../api"
 import SelectDropdown from "react-native-select-dropdown"
-import { Card, Layout,Input, Select, SelectItem, IndexPath, Button } from "@ui-kitten/components"
+import { Card, Layout,Input, Select, SelectItem, IndexPath, Button, CheckBox } from "@ui-kitten/components"
 import { Header } from "./registerForm"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { UserContext } from "../contexts"
@@ -21,6 +21,7 @@ export const FormScreen = (props:any) => {
     const [bldgselectedIndex, setbldgselectedIndex] = useState(new IndexPath(0));
     const [departmentselectedIndex, setdepartmentselectedIndex] = useState(new IndexPath(0));
     const [floorselectedIndex, setfloorselectedIndex] = useState(new IndexPath(0));
+    const [isStaff, setisStaff] = useState<boolean>(false);
 
     const {user,updateUser} = useContext(UserContext);
 
@@ -115,9 +116,9 @@ export const FormScreen = (props:any) => {
             departmentId:department._id,
             floorId: floor._id,
             room: room, 
+            isStaff:isStaff,
         }
         if(validateForm(body)){
-
             AsyncStorage.getItem('jwt')
             .then((jwt)=>{
                 if(jwt){
@@ -141,6 +142,7 @@ export const FormScreen = (props:any) => {
             department:department.department,
             floor: floor.floor,
             room: room, 
+            isStaff:isStaff,
             date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
         }
         if(validateForm(body)){
@@ -257,6 +259,14 @@ export const FormScreen = (props:any) => {
                         // disabled={verifyLoading}
                     />               
                 </Layout>
+                <Layout style={{...styles.row, marginTop:12}}>
+                <CheckBox
+                    status="info"
+                    checked={isStaff}
+                    onChange={nextChecked => setisStaff(nextChecked)}>
+                    Staff
+                </CheckBox>
+                </Layout> 
                 <Layout style={{...styles.row,justifyContent:'center',marginTop:12}} level='1'>
                     <Button 
                         onPress={()=>submitForm()}
@@ -266,9 +276,7 @@ export const FormScreen = (props:any) => {
                         CONFIRM DETAILS
                     </Button>
                 </Layout>
-                <Layout style={styles.row}>
-                        
-                </Layout> 
+
             </Card>
         </View>
     )

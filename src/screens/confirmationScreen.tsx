@@ -1,7 +1,9 @@
 import { StyleSheet,Image, View, BackHandler } from "react-native"
 import { Button, Card, Layout, Text } from "@ui-kitten/components"
-import { useCallback, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { UserContext } from "../contexts";
+import { patchWebProps } from "@rneui/base";
 
 
 const Header = (props:any) => (
@@ -14,9 +16,15 @@ const Header = (props:any) => (
 
 const Footer = (props:any) => (
   <View {...props}>
-    <Text status="info">Your order has been confirmed with </Text>
+    <Text status="success" category="h6">ORDER CONFIRMATION</Text>
     <Text status="info">Order ID : <Text  category='h6'>{props.id}</Text></Text>
-    <Text status="danger">Your order will be delivered on {props.date} by 12:15 PM</Text>
+    {
+      props.isStaff ? 
+      <Text category="h6" status="danger">Your order will be delivered at your desk on {props.date} by 12:15 PM</Text> 
+      :
+      <Text category="h6" status="danger">Please collect your order from the canteen on {props.date} by 12:15 PM</Text>
+    }
+    
     <Text appearance="hint">Please show this QR during the time of delivery</Text>
     <Button 
     onPress={()=>{props.navigate('Home')}}
@@ -25,6 +33,8 @@ const Footer = (props:any) => (
 );
 
 export const ConfirmationScreen = (props:any) => {
+
+  const {user,updateUser} = useContext(UserContext);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', () => {
@@ -48,6 +58,7 @@ export const ConfirmationScreen = (props:any) => {
                 id={props.route?.params?.order?.data?.booking?._id}
                 date={props.route?.params?.order?.data?.booking?.date}
                 navigate={props.navigation.navigate}
+                isStaff={user.isStaff}
             />}  style={styles.card}>
               <Image
               style={styles.qr}
@@ -80,7 +91,7 @@ const styles = StyleSheet.create({
       justifyContent:'center',
     },
     qr:{
-      height:300,
-      width:300
+      height:200,
+      width:200
     }
 })

@@ -65,8 +65,15 @@ const renderItem = (order:any) => {
          Payment Mode: {order.item.paymentMode}
       </Text>
       <Text>
-         Delivery Status : {order.item.isDelivered ? 'Delivered' : 'Not Delivered'}
-      </Text>
+         Delivery Status : <Text status={order.item.isDelivered?'success':'danger'}>{order.item.isDelivered ? 'Delivered' : 'Not Delivered'}</Text>
+      </Text> 
+      {
+        order.item.isDelivered ? 
+        <Text>
+        Delivered On : {order.item.deliveredOn} 
+        </Text> 
+        : <></>
+      }
     </Card>
   )};
 
@@ -116,11 +123,18 @@ export const OrderHistory = () => {
             />}
             <Button 
                 onPress={()=>{
-                    updateUser({})
                     AsyncStorage.removeItem('jwt')
-                    .then(res=>{})
+                    .then(res=>{
+                      console.log(res);
+                      AsyncStorage.removeItem('user').then(
+                        res=>{}
+                      ).
+                      catch(err=>{})
+                    })
                     .catch(err=>{})
-                }}
+                    updateUser({})
+                }} 
+                
                 appearance='ghost' status='danger' style={{marginTop: 12}}>
                 LOG OUT
             </Button>
