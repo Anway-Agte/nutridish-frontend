@@ -138,19 +138,18 @@ export const RegisterForm = (props:any) => {
             .then(
                 r=>{
                 setverifyLoading(false)
-                props.navigation.navigate('Form')
-                // getUser(res.token).then(user=>{
-                //     if(user.detailsEntered){
-                //         updateUser(user);
-                //     }else{
-                //         setverifyLoading(false);
-                //         ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
-                //         props.navigation.navigate('Form')
-                //     } 
-                // })
-                // .catch(err=>{
-                //     setverifyLoading(false)
-                // })        
+                getUser(res.token).then(user=>{
+                    if(user.detailsEntered){
+                        updateUser(user);
+                    }else{
+                        setverifyLoading(false);
+                        ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
+                        props.navigation.navigate('Form')
+                    } 
+                })
+                .catch(err=>{
+                    setverifyLoading(false)
+                })        
               }
             )
             
