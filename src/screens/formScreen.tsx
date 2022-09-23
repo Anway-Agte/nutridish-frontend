@@ -124,6 +124,7 @@ export const FormScreen = (props:any) => {
                 if(jwt){
                     fillDetails(body,jwt)
                     .then(res => {
+                        console.log(res)
                         updateUser(res.data)
                     })
                     .catch(err=>{})
