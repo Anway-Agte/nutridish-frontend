@@ -5,7 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Button, Card, Layout, List, Text, Modal, Spinner } from '@ui-kitten/components'
 import { UserContext } from '../contexts'
 
-
 const renderItemHeader = (headerProps:any, order:any) => (
     <View {...headerProps}>
       <Text category='h6'>
@@ -78,14 +77,14 @@ const renderItem = (order:any) => {
   )};
 
 
-export const OrderHistory = () => {
+export const OrderHistory = (props:any) => {
 
     const [loading, setloading] = useState<boolean>(true);
     const [orders, setorders] = useState<any>([]);
     const {user,updateUser} = useContext(UserContext)
     
     useEffect(() => {
-        
+
         AsyncStorage.getItem('jwt')
         .then(value => {
             if(value){
@@ -99,10 +98,34 @@ export const OrderHistory = () => {
             .catch(err=>{})    
         }
         })
-        .catch(err=>{})
+        .catch(err=>{}) 
+
+
 
     }, [])
     
+    useEffect(() => {
+      setloading(true)
+      const subscribe = props.navigation.addListener('focus',()=>{
+        AsyncStorage.getItem('jwt')
+        .then(value => {
+            if(value){
+            getOrderHistory(value)
+            .then(
+                res => {
+                    setorders([...res.data])
+                    setloading(false)
+                }
+            )
+            .catch(err=>{})    
+        }
+        })
+        .catch(err=>{}) 
+      }) 
+
+      return subscribe
+    }, [props.navigation]);
+
     const data = new Array(8).fill({
         title: 'Item',
       });
@@ -140,7 +163,8 @@ export const OrderHistory = () => {
             </Button>
         </Layout>
     )
-} 
+}  
+
 
 const styles = StyleSheet.create({
     container:{
