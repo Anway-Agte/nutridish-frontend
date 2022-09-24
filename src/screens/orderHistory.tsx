@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     }, 
     item: {
         marginVertical: 4,
+        minHeight: 280
       },
       contentContainer: {
         paddingHorizontal: 8,

@@ -142,7 +142,7 @@ export const RegisterForm = (props:any) => {
                 getUser(res.token).then(user=>{
                     if(user.detailsEntered){
                         updateUser(user);
-                        props.navigation.navigate('Home')
+                        // props.navigation.navigate('Home')
                     }else{
                         setverifyLoading(false);
                         ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)

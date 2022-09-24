@@ -24,7 +24,7 @@ const BottomTabBar = ({ navigation, state }:any) =>  (
     <BottomNavigation
       selectedIndex={state.index}
       onSelect={index => navigation.navigate(state.routeNames[index])}>
-      <BottomNavigationTab title='HOME'/>
+      <BottomNavigationTab title='HOME' icon={HomeIcon}/>
       <BottomNavigationTab title='ORDERS'/>
       {/* <BottomNavigationTab title='ORDERS'/> */}
     </BottomNavigation>
@@ -48,13 +48,13 @@ export const HomeNavigator = () => {
     }, []);
 
     useEffect(() => {
-        console.log(jwt);
+        // console.log(jwt);
     }, [jwt]);
     
     return (
         <>
         {
-            user.detailsEntered && jwt ? 
+            user.detailsEntered  ? 
             <Tab.Navigator
                 sceneContainerStyle={{
                     marginTop:Constants.statusBarHeight,
@@ -62,6 +62,7 @@ export const HomeNavigator = () => {
                 }}
                 screenOptions={{
                     headerShown:false,
+                    tabBarStyle: { position: 'absolute' },
                 }}
                 tabBar={props => <BottomTabBar {...props}/>}
                 >

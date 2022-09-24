@@ -11,6 +11,7 @@ export const UserContextProvider = ({children}:any) => {
 
     useEffect(() => {
         if(user.detailsEntered){
+            console.log('context',user);
         AsyncStorage.setItem('user',JSON.stringify(user))
         }
     }, [user]);
