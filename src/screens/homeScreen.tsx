@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { book, generatePaymentLink } from '../api';
 import * as Linking from 'expo-linking';
 import { UserContext } from '../contexts';
+import { useSelector } from 'react-redux';
 
 
 export const Header = (props:any) => (
@@ -32,7 +33,10 @@ export const HomeScreen  = (props:any) => {
     const [date,setDate] = useState(new Date());
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    const {user,updateUser} = useContext(UserContext);
+    // const {user,updateUser} = useContext(UserContext); 
+
+    const jwt = useSelector((state:any)=> state.jwt);
+    const user = useSelector((state:any) => state.user);
 
     useEffect(()=>{
         var timer = setInterval(()=>setDate(new Date()),1000); 
@@ -43,8 +47,21 @@ export const HomeScreen  = (props:any) => {
         }
     }) 
 
-    useEffect(() => {
+    useEffect(() => { 
         setSelectedIndex(new IndexPath(0))
+
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            console.log('ono')
+            props.navigation.goBack(null);
+            return true;
+          }); 
+      
+          return ()=>{
+            BackHandler.removeEventListener('hardwareBackPress', () => {
+              props.navigation.goBack(null);
+              return true;
+            });
+          }
     }, []); 
 
 
@@ -55,20 +72,18 @@ export const HomeScreen  = (props:any) => {
             paymentMode: 'Pay On Delivery', 
             date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
         } 
-        setpaymentInProgress(true)
-        AsyncStorage.getItem('jwt')
-        .then(value=>{
-            if(value){
-            book(body,value)
-            .then(
-                res => {
-                    setpaymentInProgress(false)
-                    props.navigation.navigate('Confirmation',{order:res})
-                }
-            )
-        }
-        })
-        .catch(err=>setpaymentInProgress(false))
+        setpaymentInProgress(true) 
+
+        book(body,jwt)
+        .then(
+            res => {
+                setpaymentInProgress(false)
+                props.navigation.navigate('Confirmation',{order:res})
+            }
+        )
+        .catch(
+            err => {}
+        )
     } 
 
     const generateLink = () => {
@@ -76,24 +91,34 @@ export const HomeScreen  = (props:any) => {
             amount:selectedIndex.row + 1,
             date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
         }
-        setpaymentInProgress(true)
-        AsyncStorage.getItem('jwt').then(
-            value=>{
-                if(value){
-                generatePaymentLink(body,value)
-                .then(res=>
-                    {   
-                        setpaymentInProgress(false);
-                        props.navigation.navigate('Payment',{payment:res})
-                    }) 
-                .catch(err=>{
-                })
-                }
-            }
-        )
+        setpaymentInProgress(true) 
+
+        generatePaymentLink(body,jwt)
+        .then(res=>
+            {   
+                setpaymentInProgress(false);
+                props.navigation.navigate('Payment',{payment:res})
+            }) 
         .catch(err=>{
-            setpaymentInProgress(false)
         })
+
+        // AsyncStorage.getItem('jwt').then(
+        //     value=>{
+        //         if(value){
+        //         generatePaymentLink(body,value)
+        //         .then(res=>
+        //             {   
+        //                 setpaymentInProgress(false);
+        //                 props.navigation.navigate('Payment',{payment:res})
+        //             }) 
+        //         .catch(err=>{
+        //         })
+        //         }
+        //     }
+        // )
+        // .catch(err=>{
+        //     setpaymentInProgress(false)
+        // })
     }
 
     return(

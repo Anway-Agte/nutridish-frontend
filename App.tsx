@@ -8,6 +8,9 @@ import { ApplicationProvider } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import { useEffect } from 'react';
 import { UserContextProvider } from './src/contexts';
+import { Provider } from 'react-redux';
+import { persistor, store } from './src/redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const myTheme = createTheme({
   lightColors: {
@@ -25,12 +28,16 @@ export default function App() {
 
 
   return (
-    <UserContextProvider>
-    <ApplicationProvider {...eva} theme={eva.light}>
-       <AppNavigator/>
-      <StatusBar style="dark" />
-    </ApplicationProvider>
-    </UserContextProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+      <UserContextProvider>
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <AppNavigator/>
+          <StatusBar style="dark" />
+        </ApplicationProvider>
+      </UserContextProvider>
+      </PersistGate>
+    </Provider>
   );
 }
 

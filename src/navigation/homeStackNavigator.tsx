@@ -11,6 +11,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BookStackNavigator } from "./bookStackNavigator";
 import { OrderHistory } from "../screens/orderHistory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
+import { AuthStackNavigator } from "./authStackNavigator";
 
 const Stack = createNativeStackNavigator(); 
 
@@ -33,29 +35,33 @@ const BottomTabBar = ({ navigation, state }:any) =>  (
 
 export const HomeNavigator = () => {
 
-    const {user,updateUser} = useContext(UserContext)
+    // const {user,updateUser} = useContext(UserContext)
 
-    const [jwt, setjwt] = useState<string>('');
-
+    // const [jwt, setjwt] = useState<string>('');
+    const isLoggedIn = useSelector((state:any) => state.isLoggedIn); 
+    const user = useSelector((state:any) => state.user);
+    const jwt = useSelector((state:any) => state.jwt);
 
     useEffect(() => {
-        AsyncStorage.getItem('jwt')
-        .then(res=>{
-            if(res){
-            setjwt(res)
-            }})
-        .catch(err=>{})
+
+        // AsyncStorage.getItem('jwt')
+        // .then(res=>{
+        //     if(res){
+        //     // setjwt(res)
+        //     }})
+        // .catch(err=>{})
     }, []);
 
     useEffect(() => {
-        console.log(jwt);
+        // console.log(jwt);
     }, [jwt]);
     
     return (
         <>
         {
-            user.detailsEntered && jwt ? 
+            user.detailsEntered && jwt && isLoggedIn ? 
             <Tab.Navigator
+                backBehavior="history"
                 sceneContainerStyle={{
                     marginTop:Constants.statusBarHeight,
                     backgroundColor:'#dff5f7'
@@ -70,42 +76,7 @@ export const HomeNavigator = () => {
                 <Tab.Screen name='Orders' component={OrderHistory} />
             </Tab.Navigator>
             : 
-            <Stack.Navigator
-            screenOptions={{
-                contentStyle:{
-                    marginTop: Constants.statusBarHeight,
-                    backgroundColor:'#dff5f7' 
-                }
-            }}
-            initialRouteName="Register"
-            >
-                <Stack.Screen 
-                    options={{headerShown:false}}
-                    name='Register'
-                    component={RegisterForm}
-                />
-                <Stack.Screen 
-                    options={{headerShown : false}}  
-                    name="Form" 
-                    component={FormScreen}
-                />
-                {/* <Stack.Screen 
-                    options={{headerShown : false}}  
-                    name="Home" 
-                    component={HomeScreen}
-                />
-    
-                <Stack.Screen 
-                    options={{headerShown : false}}  
-                    name="Confirmation" 
-                    component={ConfirmationScreen}
-                />
-                <Stack.Screen
-                    options={{headerShown:false}} 
-                    name='UPI'
-                    component={UpiPaymentScreen}
-                /> */}
-            </Stack.Navigator>
+            <AuthStackNavigator/>
         }
         </>
     )

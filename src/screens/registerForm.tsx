@@ -4,6 +4,8 @@ import { Button, Card , Input, Layout, Spinner, Text, } from '@ui-kitten/compone
 import { getUser, sendEmailForVerification, SignUserIn } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../contexts';
+import { useDispatch } from 'react-redux';
+import { addJWT, loginUser, setUser } from '../redux/actions/actionCreator';
 
 export const Header = (props:any) => (
     <View  {...props}>
@@ -94,6 +96,8 @@ export const RegisterForm = (props:any) => {
     const [time, settime] = useState<number>(9); 
     const {user,updateUser} = useContext(UserContext);
 
+    const dispatch = useDispatch();
+
     const validEmail = new RegExp('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@moderncoe.edu.in$') 
 
     useEffect(() => {
@@ -134,24 +138,39 @@ export const RegisterForm = (props:any) => {
         setverifyLoading(true);
         SignUserIn({email:email,otp:otp}).
         then(res=>{
-            AsyncStorage.setItem('jwt',res.token)
-            .then(
-                r=>{
-                setverifyLoading(false)
-                getUser(res.token).then(user=>{
-                    if(user.detailsEntered){
-                        updateUser(user);
-                    }else{
-                        setverifyLoading(false);
-                        ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
-                        props.navigation.navigate('Form')
-                    } 
-                })
-                .catch(err=>{
+            dispatch(addJWT(res.token))
+            dispatch(loginUser()) 
+            getUser(res.token)
+            .then(user=>{
+                if(user.detailsEntered){
+                    dispatch(setUser(user))
                     setverifyLoading(false)
-                })        
-              }
+                }
+                else{
+                    setverifyLoading(false);
+                    ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
+                    props.navigation.navigate('Form')
+                }}
             )
+
+            // AsyncStorage.setItem('jwt',res.token)
+            // .then(
+            //     r=>{
+            //     setverifyLoading(false)
+            //     getUser(res.token).then(user=>{
+            //         if(user.detailsEntered){
+            //             updateUser(user);
+            //         }else{
+            //             setverifyLoading(false);
+            //             ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
+            //             props.navigation.navigate('Form')
+            //         } 
+            //     })
+            //     .catch(err=>{
+            //         setverifyLoading(false)
+            //     })        
+            //   }
+            // )
             
         })
         .catch(
@@ -338,3 +357,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
       },
 })
+

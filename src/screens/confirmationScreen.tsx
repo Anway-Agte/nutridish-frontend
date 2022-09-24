@@ -4,6 +4,7 @@ import { useCallback, useContext, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { UserContext } from "../contexts";
 import { patchWebProps } from "@rneui/base";
+import { useSelector } from "react-redux";
 
 
 const Header = (props:any) => (
@@ -34,7 +35,9 @@ const Footer = (props:any) => (
 
 export const ConfirmationScreen = (props:any) => {
 
-  const {user,updateUser} = useContext(UserContext);
+  // const {user,updateUser} = useContext(UserContext);
+
+  const user = useSelector((state:any) => state.user);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', () => {

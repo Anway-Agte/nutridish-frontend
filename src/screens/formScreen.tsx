@@ -6,6 +6,8 @@ import { Card, Layout,Input, Select, SelectItem, IndexPath, Button, CheckBox } f
 import { Header } from "./registerForm"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { UserContext } from "../contexts"
+import { useDispatch, useSelector } from "react-redux"
+import { setUser } from "../redux/actions/actionCreator"
 
 export const FormScreen = (props:any) => {
     const [name, setName] = useState('')
@@ -22,6 +24,8 @@ export const FormScreen = (props:any) => {
     const [departmentselectedIndex, setdepartmentselectedIndex] = useState(new IndexPath(0));
     const [floorselectedIndex, setfloorselectedIndex] = useState(new IndexPath(0));
     const [isStaff, setisStaff] = useState<boolean>(false);
+    const jwt = useSelector((state:any) => state.jwt);
+    const dispatch = useDispatch();
 
     const {user,updateUser} = useContext(UserContext);
 
@@ -119,18 +123,27 @@ export const FormScreen = (props:any) => {
             isStaff:isStaff,
         }
         if(validateForm(body)){
-            AsyncStorage.getItem('jwt')
-            .then((jwt)=>{
-                if(jwt){
-                    fillDetails(body,jwt)
-                    .then(res => {
-                        console.log(res)
-                        updateUser(res.data)
-                    })
-                    .catch(err=>{})
+            fillDetails(body,jwt)
+            .then(
+                user=>{
+                    dispatch(setUser(user))
                 }
+            )
+            .catch(err=>{
+                
             })
-            .catch(err=>{})
+            // AsyncStorage.getItem('jwt')
+            // .then((jwt)=>{
+            //     if(jwt){
+            //         fillDetails(body,jwt)
+            //         .then(res => {
+            //             // console.log(res)
+            //             updateUser(res.data)
+            //         })
+            //         .catch(err=>{})
+            //     }
+            // })
+            // .catch(err=>{})
         }
 
     }

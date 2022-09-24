@@ -4,6 +4,8 @@ import { getOrderHistory } from '../api'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Button, Card, Layout, List, Text, Modal, Spinner } from '@ui-kitten/components'
 import { UserContext } from '../contexts'
+import { useDispatch, useSelector } from 'react-redux'
+import { logoutUser, removeJWT, removeUser } from '../redux/actions/actionCreator'
 
 const renderItemHeader = (headerProps:any, order:any) => (
     <View {...headerProps}>
@@ -81,46 +83,36 @@ export const OrderHistory = (props:any) => {
 
     const [loading, setloading] = useState<boolean>(true);
     const [orders, setorders] = useState<any>([]);
-    const {user,updateUser} = useContext(UserContext)
     
+    const jwt  = useSelector((state:any) => state.jwt);
+    const user = useSelector((state:any) => state.user);
+
+    const dispatch = useDispatch();
+
     useEffect(() => {
-
-        AsyncStorage.getItem('jwt')
-        .then(value => {
-            if(value){
-            getOrderHistory(value)
-            .then(
-                res => {
-                    setorders([...res.data])
-                    setloading(false)
-                }
-            )
-            .catch(err=>{})    
-        }
-        })
-        .catch(err=>{}) 
-
-
+      getOrderHistory(jwt)
+      .then(
+          res => {
+              setorders([...res.data])
+              setloading(false)
+          }
+      )
+      .catch(err=>{})   
 
     }, [])
     
     useEffect(() => {
       setloading(true)
       const subscribe = props.navigation.addListener('focus',()=>{
-        AsyncStorage.getItem('jwt')
-        .then(value => {
-            if(value){
-            getOrderHistory(value)
-            .then(
-                res => {
-                    setorders([...res.data])
-                    setloading(false)
-                }
-            )
-            .catch(err=>{})    
-        }
-        })
-        .catch(err=>{}) 
+
+        getOrderHistory(jwt)
+        .then(
+            res => {
+                setorders([...res.data])
+                setloading(false)
+            }
+        )
+        .catch(err=>{})    
       }) 
 
       return subscribe
@@ -146,16 +138,19 @@ export const OrderHistory = (props:any) => {
             />}
             <Button 
                 onPress={()=>{
-                    AsyncStorage.removeItem('jwt')
-                    .then(res=>{
-                      console.log(res);
-                      AsyncStorage.removeItem('user').then(
-                        res=>{}
-                      ).
-                      catch(err=>{})
-                    })
-                    .catch(err=>{})
-                    updateUser({})
+                    // AsyncStorage.removeItem('jwt')
+                    // .then(res=>{
+                    //   // console.log(res);
+                    //   AsyncStorage.removeItem('user').then(
+                    //     res=>{}
+                    //   ).
+                    //   catch(err=>{})
+                    // })
+                    // .catch(err=>{})
+                    // updateUser({})
+                    dispatch(logoutUser())
+                    dispatch(removeJWT())
+                    dispatch(removeUser())
                 }} 
                 
                 appearance='ghost' status='danger' style={{marginTop: 12}}>

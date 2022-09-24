@@ -3,11 +3,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Layout, Spinner, Text } from '@ui-kitten/components'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { verifyPaymentLink } from '../api'
+import { useSelector } from 'react-redux'
 
 export const PaymentScreen = (props:any) => {
     const appState = useRef(AppState.currentState) 
     const [appStateVisible, setAppStateVisible] = useState(appState.current); 
     const [buttonClicked, setbuttonClicked] = useState<boolean>(false);
+    const jwt = useSelector((state:any) => state.jwt);
+
 
     useEffect(() => {
         const subscription = AppState.addEventListener("change", _handleAppStateChange);
@@ -34,21 +37,21 @@ export const PaymentScreen = (props:any) => {
                     paymentId:props.route.params.payment.data.payment_id
                 }
 
-                AsyncStorage.getItem('jwt')
-                .then(val=>{
-                    if(val){
-                    verifyPaymentLink(body,val)
-                    .then(res => {
-                        if(res.success){
-                            props.navigation.navigate('Confirmation',{order:res})
-                        }
-                    })
-                    .catch(
-                        err=>{}
-                    )
+                verifyPaymentLink(body,jwt)
+                .then(res => {
+                    if(res.success){
+                        props.navigation.navigate('Confirmation',{order:res})
+                    }
+                    else{
+                        props.navigation.navigate('Failed')
                     }
                 })
-                .catch(err=>{})
+                .catch(
+                    err=>{
+                        props.navigation.navigate('Failed')
+                    }
+                )
+
         }
     
         appState.current = nextAppState;
