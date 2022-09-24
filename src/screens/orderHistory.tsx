@@ -66,7 +66,7 @@ const renderItem = (order:any) => {
          Payment Mode: {order.item.paymentMode}
       </Text>
       <Text>
-         Delivery Status : <Text status={order.item.isDelivered?'success':'danger'}>{order.item.isDelivered ? 'Delivered' : 'Not Delivered'}</Text>
+         Delivery Status : <Text category='h6' status={order.item.isDelivered?'success':'danger'}>{order.item.isDelivered ? 'Delivered' : 'Not Delivered'}</Text>
       </Text> 
       {
         order.item.isDelivered ? 
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
     }, 
     item: {
         marginVertical: 4,
+        minHeight: 280
       },
       contentContainer: {
         paddingHorizontal: 8,

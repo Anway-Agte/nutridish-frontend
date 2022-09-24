@@ -13,21 +13,27 @@ import { OrderHistory } from "../screens/orderHistory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import { AuthStackNavigator } from "./authStackNavigator";
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator(); 
 
 const Tab = createBottomTabNavigator();
 
 const HomeIcon = (props:any) => (
-    <Icon {...props} name='star'/>
+    <AntDesign name="home" size={24} color="blue" />
   );
+
+const OrderIcon = (props:any) => (
+    <MaterialIcons name="history" size={24} color="blue" />
+)
 
 const BottomTabBar = ({ navigation, state }:any) =>  (
     <BottomNavigation
+      style={{marginBottom:24}}
       selectedIndex={state.index}
       onSelect={index => navigation.navigate(state.routeNames[index])}>
-      <BottomNavigationTab title='HOME'/>
-      <BottomNavigationTab title='ORDERS'/>
+      <BottomNavigationTab title='HOME' icon={HomeIcon}/>
+      <BottomNavigationTab title='ORDERS' icon={OrderIcon} />
       {/* <BottomNavigationTab title='ORDERS'/> */}
     </BottomNavigation>
   );
@@ -68,6 +74,7 @@ export const HomeNavigator = () => {
                 }}
                 screenOptions={{
                     headerShown:false,
+                    tabBarStyle: { position: 'absolute' },
                 }}
                 tabBar={props => <BottomTabBar {...props}/>}
                 >

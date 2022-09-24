@@ -1,8 +1,8 @@
 import { View, StyleSheet, ToastAndroid} from "react-native"
-import { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { book, fillDetails, getBuildings, getDepartments, getFloors } from "../api"
 import SelectDropdown from "react-native-select-dropdown"
-import { Card, Layout,Input, Select, SelectItem, IndexPath, Button, CheckBox } from "@ui-kitten/components"
+import { Card, Layout,Input, Select, SelectItem, IndexPath, Button, CheckBox, Radio, RadioGroup } from "@ui-kitten/components"
 import { Header } from "./registerForm"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { UserContext } from "../contexts"
@@ -27,6 +27,7 @@ export const FormScreen = (props:any) => {
     const jwt = useSelector((state:any) => state.jwt);
     const dispatch = useDispatch();
 
+    const [staffIndex,setStaffIndex] = useState(1);
     const {user,updateUser} = useContext(UserContext);
 
     const [date,setDate] = useState(new Date());
@@ -43,7 +44,7 @@ export const FormScreen = (props:any) => {
     }) 
 
     useEffect(() => {
-        
+        console.log(user);
         getBuildings().then(res => {
             setbuildings(res)
         }).catch(err=>{})
@@ -99,11 +100,11 @@ export const FormScreen = (props:any) => {
             ToastAndroid.show('Please enter a valid mobile number', ToastAndroid.SHORT)
             return false
         }
-        else if(!body.buildingId || !body.departmentId || !body.floorId){
+        else if(staffIndex===0 && (!body.buildingId || !body.departmentId || !body.floorId)){
             ToastAndroid.show('Please select all the field values', ToastAndroid.SHORT)
             return false
         }
-        else if(!body.room){
+        else if(staffIndex===0 && (!body.room)){
             ToastAndroid.show('Please enter a room number',ToastAndroid.SHORT)
             return false
         }
@@ -116,12 +117,13 @@ export const FormScreen = (props:any) => {
         const body = {
             name:name, 
             contact:`+91${mobile}`, 
-            buildingId:bldg._id,
-            departmentId:department._id,
-            floorId: floor._id,
+            buildingId:!staffIndex ?bldg._id : '',
+            departmentId:!staffIndex ?department._id : '',
+            floorId: !staffIndex ? floor._id : '',
             room: room, 
             isStaff:isStaff,
         }
+        console.log(body);
         if(validateForm(body)){
             fillDetails(body,jwt)
             .then(
@@ -156,7 +158,7 @@ export const FormScreen = (props:any) => {
             department:department.department,
             floor: floor.floor,
             room: room, 
-            isStaff:isStaff,
+            isStaff:staffIndex==0?true:false,
             date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
         }
         if(validateForm(body)){
@@ -213,7 +215,19 @@ export const FormScreen = (props:any) => {
                         // disabled={verifyLoading}
                     />
                 </Layout>
-                <Layout style={styles.row} level='1'>
+                <Layout style={styles.row}>
+                    <RadioGroup
+                        style={{...styles.row, marginTop:8}}
+                        selectedIndex={staffIndex}
+                        onChange={index => setStaffIndex(index)}>
+                        <Radio>Staff</Radio>
+                        <Radio>Student</Radio>
+                    </RadioGroup>
+                </Layout>
+                {
+                    staffIndex == 0 ? 
+                    <>
+                                    <Layout style={styles.row} level='1'>
                     <Select
                         label='Select Building'
                         placeholder={'Select Building'}
@@ -273,14 +287,17 @@ export const FormScreen = (props:any) => {
                         // disabled={verifyLoading}
                     />               
                 </Layout>
-                <Layout style={{...styles.row, marginTop:12}}>
+                    </>
+                : <></>
+                }
+                {/* <Layout style={{...styles.row, marginTop:12}}>
                 <CheckBox
                     status="info"
                     checked={isStaff}
                     onChange={nextChecked => setisStaff(nextChecked)}>
                     Staff
                 </CheckBox>
-                </Layout> 
+                </Layout>  */}
                 <Layout style={{...styles.row,justifyContent:'center',marginTop:12}} level='1'>
                     <Button 
                         onPress={()=>submitForm()}

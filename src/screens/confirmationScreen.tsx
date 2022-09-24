@@ -17,13 +17,13 @@ const Header = (props:any) => (
 
 const Footer = (props:any) => (
   <View {...props}>
-    <Text status="success" category="h6">ORDER CONFIRMATION</Text>
+    <Text status="success" category="h6">ORDER CONFIRMED !</Text>
     <Text status="info">Order ID : <Text  category='h6'>{props.id}</Text></Text>
     {
       props.isStaff ? 
       <Text category="h6" status="danger">Your order will be delivered at your desk on {props.date} by 12:15 PM</Text> 
       :
-      <Text category="h6" status="danger">Please collect your order from Open Stage, opposite to MCOE canteen on {props.date} by 12:15 PM</Text>
+      <Text category="h6" status="danger">Please collect your order from Open Stage, opposite to MCOE canteen on {props.date} between 12:15 PM and 12:30 PM</Text>
     }
     
     <Text appearance="hint">Please show this QR during the time of delivery</Text>
