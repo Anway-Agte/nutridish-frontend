@@ -180,7 +180,7 @@ export const RegisterForm = (props:any) => {
                 // header={Header} 
                 style={styles.card} 
                 status='success'
-                header={({...props})=><Header {...props} text='Enter your Email' />}
+                header={({...props})=><Header {...props} text='Only For PES MCOE Staff and Students' />}
                 footer={(props:any)=>
                     <Footer 
                         {...props} 
@@ -198,9 +198,9 @@ export const RegisterForm = (props:any) => {
                     <Input
                         disabled={emailSent}
                         style={styles.input}
-                        placeholder='Email'
+                        placeholder='eg. xyz@moderncoe.edu.in'
                         value={`${email}`}
-                        label='Email'
+                        label='Modern Domain Email ID'
                         onChangeText={val=>setemail(val)}
                     />
 
