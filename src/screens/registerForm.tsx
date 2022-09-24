@@ -4,6 +4,7 @@ import { Button, Card , Input, Layout, Spinner, Text, } from '@ui-kitten/compone
 import { getUser, sendEmailForVerification, SignUserIn } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../contexts';
+import { PropsService } from '@ui-kitten/components/devsupport';
 
 export const Header = (props:any) => (
     <View  {...props}>
@@ -141,6 +142,7 @@ export const RegisterForm = (props:any) => {
                 getUser(res.token).then(user=>{
                     if(user.detailsEntered){
                         updateUser(user);
+                        props.navigation.navigate('Home')
                     }else{
                         setverifyLoading(false);
                         ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)

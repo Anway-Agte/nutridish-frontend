@@ -89,13 +89,13 @@ export const HomeNavigator = () => {
                     name="Form" 
                     component={FormScreen}
                 />
-                {/* <Stack.Screen 
+                <Stack.Screen 
                     options={{headerShown : false}}  
                     name="Home" 
                     component={HomeScreen}
                 />
     
-                <Stack.Screen 
+                {/* <Stack.Screen 
                     options={{headerShown : false}}  
                     name="Confirmation" 
                     component={ConfirmationScreen}
