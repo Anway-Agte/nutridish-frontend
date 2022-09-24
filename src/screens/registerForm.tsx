@@ -1,12 +1,9 @@
-import { View, ImageBackground, StyleSheet, ToastAndroid, Image } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { View, StyleSheet, ToastAndroid, Image } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Button, Card , Input, Layout, Spinner, Text, } from '@ui-kitten/components';
 import { getUser, sendEmailForVerification, SignUserIn } from '../api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserContext } from '../contexts';
 import { useDispatch } from 'react-redux';
 import { addJWT, loginUser, setUser } from '../redux/actions/actionCreator';
-import { PropsService } from '@ui-kitten/components/devsupport';
 
 export const Header = (props:any) => (
     <View  {...props}>
@@ -89,13 +86,12 @@ export const RegisterForm = (props:any) => {
     const [emailSent, setemailSent] = useState<boolean>(false);
     const [loading, setloading] = useState<boolean>(false);
     const [otp, setotp] = useState('');
-    const [otpSent, setotpSent] = useState<string>('');
+    // const [otpSent, setotpSent] = useState<string>('');
     const [verifyLoading, setverifyLoading] = useState<boolean>(false);
     const [otpError, setotpError] = useState<boolean>(false);
     const [resendOTP, setresendOTP] = useState<boolean>(false);
     const [timer, settimer] = useState<any>();
     const [time, settime] = useState<number>(9); 
-    const {user,updateUser} = useContext(UserContext);
 
     const dispatch = useDispatch();
 
@@ -126,7 +122,7 @@ export const RegisterForm = (props:any) => {
             res=>{
                 setemailSent(true);
                 setloading(false);
-                setotpSent(res);
+                // setotpSent(res);
                 countDown();
                 
             }

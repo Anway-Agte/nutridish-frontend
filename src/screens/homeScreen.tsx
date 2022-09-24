@@ -1,11 +1,7 @@
-import {View, StyleSheet, ImageBackground, Image, AppState, BackHandler} from 'react-native';
-import {Button, Card, IndexPath, Layout, List, ListItem, Select, SelectItem, Spinner, Text} from '@ui-kitten/components';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {View, StyleSheet, Image, AppState, BackHandler} from 'react-native';
+import {Button, IndexPath, Layout, ListItem, Select, SelectItem, Spinner, Text} from '@ui-kitten/components';
+import {useEffect, useRef, useState } from 'react';
 import { book, generatePaymentLink } from '../api';
-import * as Linking from 'expo-linking';
-import { UserContext } from '../contexts';
 import { useSelector } from 'react-redux';
 
 
@@ -21,19 +17,12 @@ const renderItem = ({ item, index }:any) => (
 
 export const HomeScreen  = (props:any) => {
 
-    
-    const appState = useRef(AppState.currentState) 
-
-    const [quantity, setquantity] = useState<number>(1);
-
     const [selectedIndex, setSelectedIndex] = useState(new IndexPath(0));
 
     const [paymentInProgress, setpaymentInProgress] = useState<boolean>(false);
  
     const [date,setDate] = useState(new Date());
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-    // const {user,updateUser} = useContext(UserContext); 
 
     const jwt = useSelector((state:any)=> state.jwt);
     const user = useSelector((state:any) => state.user);
@@ -51,7 +40,6 @@ export const HomeScreen  = (props:any) => {
         setSelectedIndex(new IndexPath(0))
 
         BackHandler.addEventListener('hardwareBackPress', () => {
-            console.log('ono')
             props.navigation.goBack(null);
             return true;
           }); 
@@ -102,23 +90,6 @@ export const HomeScreen  = (props:any) => {
         .catch(err=>{
         })
 
-        // AsyncStorage.getItem('jwt').then(
-        //     value=>{
-        //         if(value){
-        //         generatePaymentLink(body,value)
-        //         .then(res=>
-        //             {   
-        //                 setpaymentInProgress(false);
-        //                 props.navigation.navigate('Payment',{payment:res})
-        //             }) 
-        //         .catch(err=>{
-        //         })
-        //         }
-        //     }
-        // )
-        // .catch(err=>{
-        //     setpaymentInProgress(false)
-        // })
     }
 
     return(
@@ -153,7 +124,7 @@ export const HomeScreen  = (props:any) => {
                     }
                 </Select>
             </Layout> 
-            <Text status='danger' category='h6'>Amount to be paid : ₹ {(selectedIndex.row+1)*20}</Text>
+            <Text status='danger' category='h6'>Amount to be paid : ₹ {(selectedIndex.row+1)*(user.isStaff?20:25)}</Text>
             <Layout style={styles.row}>
                 <Button
                     status='success'

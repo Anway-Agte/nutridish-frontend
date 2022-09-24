@@ -1,9 +1,7 @@
 import { StyleSheet, View, Image} from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getOrderHistory } from '../api'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Button, Card, Layout, List, Text, Modal, Spinner } from '@ui-kitten/components'
-import { UserContext } from '../contexts'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser, removeJWT, removeUser } from '../redux/actions/actionCreator'
 
@@ -60,7 +58,7 @@ const renderItem = (order:any) => {
          Order Placed on: {order.item.date}
       </Text>
       <Text>
-        Amount : ₹ {order.item.quantity*20}
+        Amount : ₹ {order.item.price}
       </Text>
       <Text>
          Payment Mode: {order.item.paymentMode}
@@ -98,7 +96,7 @@ export const OrderHistory = (props:any) => {
           }
       )
       .catch(err=>{})   
-
+      
     }, [])
     
     useEffect(() => {
@@ -138,16 +136,6 @@ export const OrderHistory = (props:any) => {
             />}
             <Button 
                 onPress={()=>{
-                    // AsyncStorage.removeItem('jwt')
-                    // .then(res=>{
-                    //   // console.log(res);
-                    //   AsyncStorage.removeItem('user').then(
-                    //     res=>{}
-                    //   ).
-                    //   catch(err=>{})
-                    // })
-                    // .catch(err=>{})
-                    // updateUser({})
                     dispatch(logoutUser())
                     dispatch(removeJWT())
                     dispatch(removeUser())

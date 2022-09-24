@@ -1,11 +1,8 @@
 import { View, StyleSheet, ToastAndroid} from "react-native"
-import React, { useContext, useEffect, useState } from "react"
-import { book, fillDetails, getBuildings, getDepartments, getFloors } from "../api"
-import SelectDropdown from "react-native-select-dropdown"
+import React, {  useEffect, useState } from "react"
+import { fillDetails, getBuildings, getDepartments, getFloors } from "../api"
 import { Card, Layout,Input, Select, SelectItem, IndexPath, Button, CheckBox, Radio, RadioGroup } from "@ui-kitten/components"
 import { Header } from "./registerForm"
-import AsyncStorage from "@react-native-async-storage/async-storage"
-import { UserContext } from "../contexts"
 import { useDispatch, useSelector } from "react-redux"
 import { setUser } from "../redux/actions/actionCreator"
 
@@ -23,12 +20,11 @@ export const FormScreen = (props:any) => {
     const [bldgselectedIndex, setbldgselectedIndex] = useState(new IndexPath(0));
     const [departmentselectedIndex, setdepartmentselectedIndex] = useState(new IndexPath(0));
     const [floorselectedIndex, setfloorselectedIndex] = useState(new IndexPath(0));
-    const [isStaff, setisStaff] = useState<boolean>(false);
     const jwt = useSelector((state:any) => state.jwt);
+    const user = useSelector((state:any) => state.user);
     const dispatch = useDispatch();
 
     const [staffIndex,setStaffIndex] = useState(1);
-    const {user,updateUser} = useContext(UserContext);
 
     const [date,setDate] = useState(new Date());
 
@@ -44,7 +40,6 @@ export const FormScreen = (props:any) => {
     }) 
 
     useEffect(() => {
-        console.log(user);
         getBuildings().then(res => {
             setbuildings(res)
         }).catch(err=>{})
@@ -88,7 +83,6 @@ export const FormScreen = (props:any) => {
         if(departments?.length){
             setdepartment(departments[departmentselectedIndex.row])
         }
-        //
     }, [departmentselectedIndex]);
 
     const validateForm = (body:any) => {
@@ -120,74 +114,24 @@ export const FormScreen = (props:any) => {
             buildingId:!staffIndex ?bldg._id : '',
             departmentId:!staffIndex ?department._id : '',
             floorId: !staffIndex ? floor._id : '',
-            room: room, 
-            isStaff:isStaff,
+            room: !staffIndex ? room : '', 
+            isStaff: staffIndex==0?true:false
         }
-        console.log(body);
         if(validateForm(body)){
             fillDetails(body,jwt)
             .then(
                 user=>{
-                    dispatch(setUser(user))
+                    dispatch(setUser(user.data))
                 }
             )
             .catch(err=>{
                 
             })
-            // AsyncStorage.getItem('jwt')
-            // .then((jwt)=>{
-            //     if(jwt){
-            //         fillDetails(body,jwt)
-            //         .then(res => {
-            //             // console.log(res)
-            //             updateUser(res.data)
-            //         })
-            //         .catch(err=>{})
-            //     }
-            // })
-            // .catch(err=>{})
         }
 
     }
 
-    const initializePayment = () => {
-        const body = {
-            name:name, 
-            contact:mobile, 
-            building:bldg.name,
-            department:department.department,
-            floor: floor.floor,
-            room: room, 
-            isStaff:staffIndex==0?true:false,
-            date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
-        }
-        if(validateForm(body)){
-            props.navigation.navigate('UPI',{body:body, 
-                date: date.getHours() < 11 ? `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` 
-                : `${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}` })
-        }
-    }
 
-    // const confirmBooking = () => {
-    //     const body = {
-    //         name:name, 
-    //         contact:mobile, 
-    //         building:bldg.name,
-    //         department:department.department,
-    //         floor: floor.floor,
-    //         room: room, 
-    //         date: date.getHours() < 11 ? date.toDateString() : new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toDateString() 
-    //     }
-
-    //     if(validateForm(body)){
-
-    //         book({...body,paymentMode:'Pay On Delivery'}).then(res =>
-    //         props.navigation.navigate('Confirmation',{date: date.getHours() < 11 ? `${days[date.getDay()]}, ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` 
-    //             : `${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getDate()}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getMonth()+1}/${new Date(new Date().getTime() + 24 * 60 * 60 * 1000).getFullYear()}` 
-    //             })
-    //     ).catch(err => ToastAndroid.show('There was an unexpected error, please try again', ToastAndroid.SHORT) );
-    //         }
-    // }
     return(
         <View style={styles.container}>
             <Card

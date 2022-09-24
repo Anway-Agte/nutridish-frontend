@@ -1,9 +1,6 @@
 import { StyleSheet,Image, View, BackHandler } from "react-native"
 import { Button, Card, Layout, Text } from "@ui-kitten/components"
-import { useCallback, useContext, useEffect } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { UserContext } from "../contexts";
-import { patchWebProps } from "@rneui/base";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 
@@ -34,8 +31,6 @@ const Footer = (props:any) => (
 );
 
 export const ConfirmationScreen = (props:any) => {
-
-  // const {user,updateUser} = useContext(UserContext);
 
   const user = useSelector((state:any) => state.user);
 
@@ -80,7 +75,6 @@ export const ConfirmationScreen = (props:any) => {
 const styles = StyleSheet.create({
     container : {
       flex:1,
-      flexDirection:'column',
       alignItems:'center',
       justifyContent:'center',
       backgroundColor:'#EDF1F7',

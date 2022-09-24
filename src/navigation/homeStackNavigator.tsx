@@ -1,16 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { HomeScreen } from "../screens/homeScreen";
 import Constants from 'expo-constants';
-import { FormScreen } from "../screens/formScreen";
-import { ConfirmationScreen } from "../screens/confirmationScreen";
-import {RegisterForm} from '../screens/registerForm';
-import { UserContext } from "../contexts";
-import { useContext, useEffect, useState } from "react";
-import { BottomNavigation, BottomNavigationTab, Icon, Text } from "@ui-kitten/components";
+import { useEffect } from "react";
+import { BottomNavigation, BottomNavigationTab} from "@ui-kitten/components";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BookStackNavigator } from "./bookStackNavigator";
 import { OrderHistory } from "../screens/orderHistory";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
 import { AuthStackNavigator } from "./authStackNavigator";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
@@ -27,11 +21,12 @@ const OrderIcon = (props:any) => (
     <MaterialIcons name="history" size={24} color="blue" />
 )
 
-const BottomTabBar = ({ navigation, state }:any) =>  (
+const BottomTabBar = (props:any) =>  (
     <BottomNavigation
-      style={{marginBottom:24}}
-      selectedIndex={state.index}
-      onSelect={index => navigation.navigate(state.routeNames[index])}>
+      {...props}
+      style={{}}
+      selectedIndex={props.state.index}
+      onSelect={index => props.navigation.navigate(props.state.routeNames[index])}>
       <BottomNavigationTab title='HOME' icon={HomeIcon}/>
       <BottomNavigationTab title='ORDERS' icon={OrderIcon} />
       {/* <BottomNavigationTab title='ORDERS'/> */}
@@ -41,9 +36,6 @@ const BottomTabBar = ({ navigation, state }:any) =>  (
 
 export const HomeNavigator = () => {
 
-    // const {user,updateUser} = useContext(UserContext)
-
-    // const [jwt, setjwt] = useState<string>('');
     const isLoggedIn = useSelector((state:any) => state.isLoggedIn); 
     const user = useSelector((state:any) => state.user);
     const jwt = useSelector((state:any) => state.jwt);
@@ -59,8 +51,7 @@ export const HomeNavigator = () => {
     }, []);
 
     useEffect(() => {
-        // console.log(jwt);
-    }, [jwt]);
+    }, [user]);
     
     return (
         <>
@@ -74,13 +65,21 @@ export const HomeNavigator = () => {
                 }}
                 screenOptions={{
                     headerShown:false,
-                    tabBarStyle: { position: 'absolute' },
                 }}
-                tabBar={props => <BottomTabBar {...props}/>}
+                // tabBar={props => <BottomTabBar {...props}/>}
                 >
                 <Tab.Screen                     
+                    options={{
+                        tabBarLabel:'Home',
+                        tabBarIcon:HomeIcon
+                    }} 
                     name='BookNavigator' component={BookStackNavigator} />
-                <Tab.Screen name='Orders' component={OrderHistory} />
+                <Tab.Screen 
+                    options={{
+                        tabBarLabel:'Orders',
+                        tabBarIcon:OrderIcon
+                    }} 
+                name='Orders' component={OrderHistory} />
             </Tab.Navigator>
             : 
             <AuthStackNavigator/>

@@ -1,7 +1,6 @@
 import {StyleSheet,Linking, AppState, BackHandler} from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Layout, Spinner, Text } from '@ui-kitten/components'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { verifyPaymentLink } from '../api'
 import { useSelector } from 'react-redux'
 

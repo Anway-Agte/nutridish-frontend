@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const UserContext = createContext<any>({}) 
 
@@ -10,14 +10,12 @@ export const UserContextProvider = ({children}:any) => {
     const updateUser = (user:any) => setuser(user) ;
 
     useEffect(() => {
-        console.log('context',user);
         AsyncStorage.setItem('user',JSON.stringify(user))
         .then(
-            res => console.log('inside',res)
+            res => {}
         )
         .catch(err=>{})
         if(user.detailsEntered){
-            console.log('context',user);
         
         }
     }, [user]);
@@ -25,7 +23,6 @@ export const UserContextProvider = ({children}:any) => {
     useEffect(() => {
         AsyncStorage.getItem('user').then(
             value => {
-                console.log(value);
                 if(value){
                     setuser(JSON.parse(value))
                     AsyncStorage.getItem('jwt').then(
