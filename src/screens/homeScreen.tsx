@@ -76,7 +76,10 @@ export const HomeScreen  = (props:any) => {
             }
         )
         .catch(
-            err => {}
+            err => {
+                setpaymentInProgress(false)
+                ToastAndroid.show(err,ToastAndroid.SHORT)
+            }
         )
     } 
 
@@ -100,6 +103,8 @@ export const HomeScreen  = (props:any) => {
                 }
             }) 
         .catch(err=>{
+            setpaymentInProgress(false)
+            ToastAndroid.show(err,ToastAndroid.SHORT)
         })
 
     }
