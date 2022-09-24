@@ -58,7 +58,7 @@ const renderItem = (order:any) => {
          Order Placed on: {order.item.date}
       </Text>
       <Text>
-        Amount : ₹ {order.item.quantity*25}
+        Amount : ₹ {order.item.quantity*20}
       </Text>
       <Text>
          Payment Mode: {order.item.paymentMode}
