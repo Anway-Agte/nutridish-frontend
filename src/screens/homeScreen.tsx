@@ -1,4 +1,4 @@
-import {View, StyleSheet, Image, AppState, BackHandler} from 'react-native';
+import {View, StyleSheet, Image, AppState, BackHandler, ToastAndroid} from 'react-native';
 import {Button, IndexPath, Layout, ListItem, Select, SelectItem, Spinner, Text} from '@ui-kitten/components';
 import {useEffect, useRef, useState } from 'react';
 import { book, generatePaymentLink } from '../api';
@@ -65,8 +65,14 @@ export const HomeScreen  = (props:any) => {
         book(body,jwt)
         .then(
             res => {
+                if(res.success){
                 setpaymentInProgress(false)
                 props.navigation.navigate('Confirmation',{order:res})
+                }
+                else{
+                    setpaymentInProgress(false)
+                    ToastAndroid.show(res.message,ToastAndroid.SHORT)
+                }
             }
         )
         .catch(
@@ -84,8 +90,14 @@ export const HomeScreen  = (props:any) => {
         generatePaymentLink(body,jwt)
         .then(res=>
             {   
+                if(res.success){
                 setpaymentInProgress(false);
                 props.navigation.navigate('Payment',{payment:res})
+                }
+                else{
+                    setpaymentInProgress(false)
+                    ToastAndroid.show(res.message,ToastAndroid.SHORT)
+                }
             }) 
         .catch(err=>{
         })
