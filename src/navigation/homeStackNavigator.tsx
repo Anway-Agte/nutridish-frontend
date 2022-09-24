@@ -11,21 +11,27 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BookStackNavigator } from "./bookStackNavigator";
 import { OrderHistory } from "../screens/orderHistory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator(); 
 
 const Tab = createBottomTabNavigator();
 
 const HomeIcon = (props:any) => (
-    <Icon {...props} name='star'/>
+    <AntDesign name="home" size={24} color="blue" />
   );
+
+const OrderIcon = (props:any) => (
+    <MaterialIcons name="history" size={24} color="blue" />
+)
 
 const BottomTabBar = ({ navigation, state }:any) =>  (
     <BottomNavigation
+      style={{marginBottom:24}}
       selectedIndex={state.index}
       onSelect={index => navigation.navigate(state.routeNames[index])}>
       <BottomNavigationTab title='HOME' icon={HomeIcon}/>
-      <BottomNavigationTab title='ORDERS'/>
+      <BottomNavigationTab title='ORDERS' icon={OrderIcon} />
       {/* <BottomNavigationTab title='ORDERS'/> */}
     </BottomNavigation>
   );
@@ -39,6 +45,7 @@ export const HomeNavigator = () => {
 
 
     useEffect(() => {
+        console.log(user);
         AsyncStorage.getItem('jwt')
         .then(res=>{
             if(res){
@@ -48,7 +55,7 @@ export const HomeNavigator = () => {
     }, []);
 
     useEffect(() => {
-        // console.log(jwt);
+        console.log('detailsEntered' in user? 'Form' : 'Register');
     }, [jwt]);
     
     return (
@@ -78,7 +85,7 @@ export const HomeNavigator = () => {
                     backgroundColor:'#dff5f7' 
                 }
             }}
-            initialRouteName="Register"
+            initialRouteName={'detailsEntered' in user? 'Form' : 'Register'}
             >
                 <Stack.Screen 
                     options={{headerShown:false}}

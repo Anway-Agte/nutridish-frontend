@@ -140,6 +140,8 @@ export const RegisterForm = (props:any) => {
                 r=>{
                 setverifyLoading(false)
                 getUser(res.token).then(user=>{
+                    console.log('email',user);
+                    updateUser(user);
                     if(user.detailsEntered){
                         updateUser(user);
                         // props.navigation.navigate('Home')
