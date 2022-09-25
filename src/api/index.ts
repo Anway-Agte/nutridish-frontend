@@ -1,6 +1,6 @@
 const host = 'https://nutri-dish.herokuapp.com'
 
-export const book = async (body:any,jwt:string) => {
+export const book = async (body:bookRequestBody,jwt:string) => {
     try{
         const response = await fetch(`${host}/book`, {
             method:'POST',
@@ -98,7 +98,7 @@ export const sendEmailForVerification = async (email:string) => {
     }
 } 
 
-export const SignUserIn = async (payload:any) =>{
+export const SignUserIn = async (payload:signInRequestBody) =>{
     try{
         const response = await fetch(`${host}/signin`,{
             method:"POST",
@@ -125,7 +125,7 @@ export const SignUserIn = async (payload:any) =>{
     }
 } 
 
-export const fillDetails = async(body:any,jwt:string) => {
+export const fillDetails = async(body:editUserDetails,jwt:string) => {
     try{
         const response = await fetch(`${host}/user`, {
             method:'PUT', 
@@ -149,7 +149,7 @@ export const fillDetails = async(body:any,jwt:string) => {
     }
 } 
 
-export const generatePaymentLink = async (body:any,jwt:string) => {
+export const generatePaymentLink = async (body:generatePaymentInterface,jwt:string) => {
     try{
         const response = await fetch(`${host}/book/paymentlink`,
         {
@@ -175,7 +175,7 @@ export const generatePaymentLink = async (body:any,jwt:string) => {
     }
 } 
 
-export const verifyPaymentLink = async (body:any,jwt:string) => {
+export const verifyPaymentLink = async (body:verifyPaymentBody,jwt:string) => {
     try{
         const response = await fetch(`${host}/book/verifypayment`,
         {

@@ -90,7 +90,7 @@ export const OrderHistory = (props:any) => {
     useEffect(() => {
       getOrderHistory(jwt)
       .then(
-          res => {
+          (res:Orders)=> {
               setorders([...res.data])
               setloading(false)
           }
@@ -105,7 +105,7 @@ export const OrderHistory = (props:any) => {
 
         getOrderHistory(jwt)
         .then(
-            res => {
+           (res: Orders) => {
                 setorders([...res.data])
                 setloading(false)
             }

@@ -40,7 +40,7 @@ export const FormScreen = (props:any) => {
     }) 
 
     useEffect(() => {
-        getBuildings().then(res => {
+        getBuildings().then((res: Array<Building>) => {
             setbuildings(res)
         }).catch(err=>{})
 
@@ -48,7 +48,7 @@ export const FormScreen = (props:any) => {
 
     useEffect(() => {
         getFloors(bldg._id).then(
-            res=>{
+            (res:Array<Floor>)=>{
                 setfloors(res)
                 setfloorselectedIndex(new IndexPath(0))
             }
@@ -57,7 +57,7 @@ export const FormScreen = (props:any) => {
 
     useEffect(() => {
         getDepartments(floor._id).then(
-            res=>
+            (res:Array<Department>)=>
             {setdepartments(res)
             setdepartmentselectedIndex(new IndexPath(0))
             }
@@ -120,7 +120,7 @@ export const FormScreen = (props:any) => {
         if(validateForm(body)){
             fillDetails(body,jwt)
             .then(
-                user=>{
+                (user: EditProfileResponse)=>{
                     dispatch(setUser(user.data))
                 }
             )

@@ -119,7 +119,7 @@ export const RegisterForm = (props:any) => {
         setresendOTP(false);
         settime(9)
         sendEmailForVerification(email).then(
-            res=>{
+            (res:verifyMailResponse)=>{
                 setemailSent(true);
                 setloading(false);
                 // setotpSent(res);
@@ -134,11 +134,11 @@ export const RegisterForm = (props:any) => {
     const verifyOTP = () => {
         setverifyLoading(true);
         SignUserIn({email:email,otp:otp}).
-        then(res=>{
+        then((res:signInResponse)=>{
             dispatch(addJWT(res.token))
             dispatch(loginUser()) 
             getUser(res.token)
-            .then(user=>{
+            .then((user:User)=>{
                 if(user.detailsEntered){
                     dispatch(setUser(user))
                     setverifyLoading(false)
@@ -149,26 +149,6 @@ export const RegisterForm = (props:any) => {
                     props.navigation.navigate('Form')
                 }}
             )
-
-            // AsyncStorage.setItem('jwt',res.token)
-            // .then(
-            //     r=>{
-            //     setverifyLoading(false)
-            //     getUser(res.token).then(user=>{
-            //         if(user.detailsEntered){
-            //             updateUser(user);
-            //         }else{
-            //             setverifyLoading(false);
-            //             ToastAndroid.show('OTP VERIFIED AND ACCOUNT CREATED',ToastAndroid.SHORT)
-            //             props.navigation.navigate('Form')
-            //         } 
-            //     })
-            //     .catch(err=>{
-            //         setverifyLoading(false)
-            //     })        
-            //   }
-            // )
-            
         })
         .catch(
            err=>{

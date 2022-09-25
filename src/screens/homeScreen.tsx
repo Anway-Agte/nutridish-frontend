@@ -64,14 +64,14 @@ export const HomeScreen  = (props:any) => {
 
         book(body,jwt)
         .then(
-            res => {
+            (res: VerifyTransactionResponse) => {
                 if(res.success){
                 setpaymentInProgress(false)
                 props.navigation.navigate('Confirmation',{order:res})
                 }
                 else{
                     setpaymentInProgress(false)
-                    ToastAndroid.show(res.message,ToastAndroid.SHORT)
+                    ToastAndroid.show(res.message?res.message:'',ToastAndroid.SHORT)
                 }
             }
         )
@@ -91,7 +91,7 @@ export const HomeScreen  = (props:any) => {
         setpaymentInProgress(true) 
 
         generatePaymentLink(body,jwt)
-        .then(res=>
+        .then((res:GeneratePaymentLinkResponse)=>
             {   
                 if(res.success){
                 setpaymentInProgress(false);
@@ -99,7 +99,7 @@ export const HomeScreen  = (props:any) => {
                 }
                 else{
                     setpaymentInProgress(false)
-                    ToastAndroid.show(res.message,ToastAndroid.SHORT)
+                    ToastAndroid.show(res.message?res.message:'',ToastAndroid.SHORT)
                 }
             }) 
         .catch(err=>{
