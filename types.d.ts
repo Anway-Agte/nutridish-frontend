@@ -37,15 +37,15 @@ interface User {
     name:string,
     contact:string,
     email:string,
-    createdAt: Date| string, 
-    updatedAt: Date| string, 
+    createdAt?: Date| string, 
+    updatedAt?: Date| string, 
     room?: string,
     building?: string, 
     department?: string, 
     floor?:string,
     isStaff: boolean, 
     detailsEntered:boolean,
-    __v: number|string 
+    __v?: number|string 
 
 } 
 
