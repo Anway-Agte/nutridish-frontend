@@ -141,7 +141,7 @@ export const HomeScreen  = (props:any) => {
                     }
                 </Select>
             </Layout> 
-            <Text status='danger' category='h6'>Amount to be paid : ₹ {(selectedIndex.row+1)*(user.isStaff?20:25)}</Text>
+            <Text status='danger' category='h6'>Amount to be paid : ₹ {(selectedIndex.row+1)*20}</Text>
             <Layout style={styles.row}>
                 <Button
                     status='success'
