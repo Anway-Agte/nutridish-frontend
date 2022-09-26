@@ -20,8 +20,10 @@ const renderItemHeader = (headerProps:any, order:any) => (
     return(
     <Layout {...footerProps}>
     <Button 
+        disabled={order.item.qr?false:true}
+        appearance="outline"
         onPress={()=>setVisible(true)}
-        style={{width:'40%'}} status='info' >
+        style={{width:'41%'}} status='primary' >
         Open QR Code
     </Button>
     <Modal
