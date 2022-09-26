@@ -151,10 +151,10 @@ export const HomeScreen  = (props:any) => {
                     }}
                     size='medium'
                     appearance='outline'
-                    disabled={paymentInProgress}
+                    disabled={true}
                     onPress={()=>generateLink()}
                 >
-                    UPI Payment     
+                    UPI Payment (to be available soon)
                 </Button>
                 <Button
                     status='info'
